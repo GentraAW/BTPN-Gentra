@@ -3,7 +3,6 @@ package com.be_springboot_onlineshop.model;
 import lombok.*;
 
 import java.util.Date;
-import java.util.UUID;
 
 import jakarta.persistence.*;
 
@@ -16,8 +15,8 @@ import jakarta.persistence.*;
 public class Customers {
     @Id
     @Column(name = "customer_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID customerId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long customerId;
 
     @Column(name = "customer_name")
     private String customerName;
@@ -30,7 +29,7 @@ public class Customers {
 
     @Column(name = "is_active")
     private Boolean isActive;
-    
+
     @Column(name = "last_order_date")
     private Date lastOrderDate;
 

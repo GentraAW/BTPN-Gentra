@@ -2,7 +2,6 @@ package com.be_springboot_onlineshop.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.be_springboot_onlineshop.model.Customers;
 import com.be_springboot_onlineshop.model.Items;
 import com.be_springboot_onlineshop.service.ItemsService;
 
@@ -31,7 +29,7 @@ public class ItemsController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Items> getItemByIdAndAvailable(@PathVariable UUID id) {
+    public ResponseEntity<Items> getItemByIdAndAvailable(@PathVariable Long id) {
         Optional<Items> item = itemsService.getItemByIdAndAvailable(id);
         return item.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -43,7 +41,7 @@ public class ItemsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Items> updateItemById(@PathVariable UUID id, @RequestBody Items updatedItem) {
+    public ResponseEntity<Items> updateItemById(@PathVariable Long id, @RequestBody Items updatedItem) {
         Items item = itemsService.updateItemById(id, updatedItem);
         if (item != null) {
             return ResponseEntity.ok(item);
@@ -53,7 +51,7 @@ public class ItemsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteItemById(@PathVariable UUID id) {
+    public ResponseEntity<String> deleteItemById(@PathVariable Long id) {
         try {
             itemsService.deleteItemById(id);
             return ResponseEntity.ok("Data berhasil dihapus.");

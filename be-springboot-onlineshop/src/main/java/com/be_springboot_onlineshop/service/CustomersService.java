@@ -1,14 +1,12 @@
 package com.be_springboot_onlineshop.service;
 
 import com.be_springboot_onlineshop.model.Customers;
-import com.be_springboot_onlineshop.model.Items;
 import com.be_springboot_onlineshop.repository.CustomersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CustomersService {
@@ -19,7 +17,7 @@ public class CustomersService {
         return customersRepo.findByIsActive(true);
     }
 
-    public Optional<Customers> getCustomerById(UUID customerId) {
+    public Optional<Customers> getCustomerById(Long customerId) {
         return customersRepo.findByCustomerIdAndIsActive(customerId, true);
     }
 
@@ -27,12 +25,13 @@ public class CustomersService {
         return customersRepo.save(newCustomer);
     }
 
-    public Customers updateCustomerById(UUID customerId, Customers updatedCustomer) {
+    public Customers updateCustomerById(Long customerId, Customers updatedCustomer) {
         Optional<Customers> customerOptional = customersRepo.findById(customerId);
         if (customerOptional.isPresent()) {
             Customers customer = customerOptional.get();
-            
-            // update hanya field yang tidak null, jika null gunakan value seperti sebelumnya
+
+            // update hanya field yang tidak null, jika null gunakan value seperti
+            // sebelumnya
             if (updatedCustomer.getCustomerName() != null) {
                 customer.setCustomerName(updatedCustomer.getCustomerName());
             }
@@ -58,7 +57,7 @@ public class CustomersService {
         }
     }
 
-    public void deleteCustomerId(UUID customerId) {
+    public void deleteCustomerId(Long customerId) {
         Optional<Customers> customerOptional = customersRepo.findById(customerId);
         if (customerOptional.isPresent()) {
             Customers customer = customerOptional.get();

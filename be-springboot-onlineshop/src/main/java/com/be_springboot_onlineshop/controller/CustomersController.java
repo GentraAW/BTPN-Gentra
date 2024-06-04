@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -22,7 +21,7 @@ public class CustomersController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customers> getCustomerById(@PathVariable UUID id) {
+    public ResponseEntity<Customers> getCustomerById(@PathVariable Long id) {
         Optional<Customers> customer = customersService.getCustomerById(id);
         return customer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -34,7 +33,7 @@ public class CustomersController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Customers> updateCustomerById(@PathVariable UUID id, @RequestBody Customers updatedCustomer) {
+    public ResponseEntity<Customers> updateCustomerById(@PathVariable Long id, @RequestBody Customers updatedCustomer) {
         Customers customer = customersService.updateCustomerById(id, updatedCustomer);
         if (customer != null) {
             return ResponseEntity.ok(customer);
@@ -44,7 +43,7 @@ public class CustomersController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCustomerById(@PathVariable UUID id) {
+    public ResponseEntity<String> deleteCustomerById(@PathVariable Long id) {
         try {
             customersService.deleteCustomerId(id);
             return ResponseEntity.ok("Data berhasil dihapus.");

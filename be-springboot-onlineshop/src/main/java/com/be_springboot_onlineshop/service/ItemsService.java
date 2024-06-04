@@ -2,13 +2,13 @@ package com.be_springboot_onlineshop.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.be_springboot_onlineshop.model.Items;
 import com.be_springboot_onlineshop.repository.ItemsRepo;
+
 @Service
 public class ItemsService {
     @Autowired
@@ -18,25 +18,26 @@ public class ItemsService {
         return itemsRepo.findByIsAvailable(true);
     }
 
-    public Optional<Items> getItemByIdAndAvailable(UUID itemId) {
+    public Optional<Items> getItemByIdAndAvailable(Long itemId) {
         return itemsRepo.findByItemIdAndIsAvailable(itemId, true);
     }
 
-    public Items createItem(Items newItem){
+    public Items createItem(Items newItem) {
         return itemsRepo.save(newItem);
     }
 
-     public Items updateItemById(UUID itemId, Items updatedItem) {
+    public Items updateItemById(Long itemId, Items updatedItem) {
         Optional<Items> itemOptional = itemsRepo.findById(itemId);
         if (itemOptional.isPresent()) {
             Items item = itemOptional.get();
-            
-            // update hanya field yang tidak null, jika null gunakan value seperti sebelumnya
+
+            // update hanya field yang tidak null, jika null gunakan value seperti
+            // sebelumnya
             if (updatedItem.getItemName() != null) {
                 item.setItemName(updatedItem.getItemName());
             }
             if (updatedItem.getItemCode() != null) {
-               item.setItemCode(updatedItem.getItemCode());
+                item.setItemCode(updatedItem.getItemCode());
             }
             if (updatedItem.getStock() != null) {
                 item.setStock(updatedItem.getStock());
@@ -56,8 +57,8 @@ public class ItemsService {
             return null;
         }
     }
-    
-    public void deleteItemById(UUID itemId) {
+
+    public void deleteItemById(Long itemId) {
         Optional<Items> itemOptional = itemsRepo.findById(itemId);
         if (itemOptional.isPresent()) {
             Items item = itemOptional.get();
