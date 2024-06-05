@@ -3,7 +3,8 @@ package com.be_springboot_onlineshop.model;
 import lombok.*;
 
 import java.util.Date;
-import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
@@ -13,6 +14,7 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "orders", schema = "public")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Orders {
     @Id
     @Column(name = "order_id")
