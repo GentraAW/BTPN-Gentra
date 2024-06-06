@@ -1,0 +1,14 @@
+<div *ngIf="customer">
+  <h1>Customer Detail</h1>
+  <p><strong>ID:</strong> {{ customer.customerId }}</p>
+  <p><strong>Name:</strong> {{ customer.customerName }}</p>
+  <p><strong>Code:</strong> {{ customer.customerCode }}</p>
+  <p><strong>Phone:</strong> {{ customer.customerPhone }}</p>
+  <p><strong>Last Order Date:</strong> {{ customer.lastOrderDate }}</p>
+  <img *ngIf="customer.pic" [src]="customer.pic" alt="Customer Picture" />
+  <button (click)="goToHome()">Back</button>
+</div>
+
+<div *ngIf="!customer">
+  <p>No customer details available.</p>
+</div>

@@ -1,1 +1,30 @@
-<p>home works!</p>
+<div *ngIf="customers.length > 0">
+  <ul>
+    <li
+      *ngFor="let customer of customers"
+      (click)="goToDetail(customer.customerId)"
+    >
+      <!-- Tampilkan data customer di sini -->
+      <p>{{ customer.customerId }} - {{ customer.customerName }}</p>
+    </li>
+  </ul>
+  <div>
+    <button
+      [disabled]="currentPage === 1"
+      (click)="onPageChange(currentPage - 1)"
+    >
+      Previous
+    </button>
+    <span>{{ currentPage }} / {{ totalPages }}</span>
+    <button
+      [disabled]="currentPage === totalPages"
+      (click)="onPageChange(currentPage + 1)"
+      class="bg-cyan-50"
+    >
+      Next
+    </button>
+  </div>
+</div>
+<div *ngIf="customers.length === 0">
+  <p>Data sudah tidak tersedia</p>
+</div>

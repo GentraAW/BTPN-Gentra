@@ -8,6 +8,10 @@ import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,11 +35,16 @@ public class CustomersService {
     private String bucketName;
 
      // Metode untuk mendapatkan semua customer aktif
-    public List<Customers> getAllActiveCustomers() {
-        List<Customers> activeCustomers = customersRepo.findByIsActive(true);
-        return activeCustomers.stream()
-            .map(this::setPicUrlIfNeeded)
-            .collect(Collectors.toList());
+    // public List<Customers> getAllActiveCustomers() {
+    //     List<Customers> activeCustomers = customersRepo.findByIsActive(true);
+    //     return activeCustomers.stream()
+    //         .map(this::setPicUrlIfNeeded)
+    //         .collect(Collectors.toList());
+    // }
+    public Page<Customers> getAllActiveCustomers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("customerName").ascending());
+        Page<Customers> activeCustomersPage = customersRepo.findByIsActive(true, pageable);
+        return activeCustomersPage.map(this::setPicUrlIfNeeded);
     }
 
     // Metode untuk mendapatkan customer berdasarkan ID

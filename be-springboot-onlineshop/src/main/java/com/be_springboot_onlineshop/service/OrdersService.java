@@ -7,8 +7,11 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.be_springboot_onlineshop.model.Customers;
 import com.be_springboot_onlineshop.model.Items;
 import com.be_springboot_onlineshop.model.Orders;
+import com.be_springboot_onlineshop.repository.CustomersRepo;
 import com.be_springboot_onlineshop.repository.ItemsRepo;
 import com.be_springboot_onlineshop.repository.OrdersRepo;
 
@@ -20,6 +23,9 @@ import com.be_springboot_onlineshop.repository.OrdersRepo;
 
     @Autowired
     private ItemsRepo itemsRepo;
+
+    @Autowired
+    private CustomersRepo customerRepo;
     
     public List<Orders> getAllOrders() {       
         return ordersRepo.findAll();
@@ -33,15 +39,15 @@ import com.be_springboot_onlineshop.repository.OrdersRepo;
         // Mengambil data item berdasarkan item_id dari newOrder
         Items item = itemsRepo.findById(newOrder.getItems().getItemId()).orElse(null);
 
-        // Jika item tidak ditemukan, kembalikan null atau lakukan penanganan error sesuai kebutuhan
+        Customers customer = customerRepo.findById(newOrder.getCustomers().getCustomerId()).orElse(null);
+
+        // Jika item tidak ditemukan, kembalikan null
         if (item == null) {
             throw new IllegalArgumentException("Item dengan ID " + newOrder.getItems().getItemId() + " tidak ditemukan");
         }
 
-        // Menghitung total price berdasarkan price dari item dan quantity dari newOrder
         Integer totalPrice = item.getPrice() * newOrder.getQuantity();
 
-        // Mengurangi stock item berdasarkan quantity dari newOrder
         Integer updatedStock = item.getStock() - newOrder.getQuantity();
         item.setStock(updatedStock);
         item.setLastReStock(new Date()); // Update lastReStock ke tanggal saat ini
@@ -49,6 +55,11 @@ import com.be_springboot_onlineshop.repository.OrdersRepo;
         // Update total price dan stock item pada newOrder
         newOrder.setTotalPrice(totalPrice);
         newOrder.getItems().setStock(updatedStock); // Update stock pada item di newOrder
+
+        if (customer == null) {
+            throw new IllegalArgumentException("Customers dengan ID " + newOrder.getCustomers().getCustomerId() + " tidak ditemukan");
+        }
+        customer.setLastOrderDate(new Date());
 
         // Simpan order dan item yang telah diupdate
         ordersRepo.save(newOrder);

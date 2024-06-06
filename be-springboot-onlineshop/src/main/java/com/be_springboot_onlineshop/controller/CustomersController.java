@@ -3,7 +3,12 @@ package com.be_springboot_onlineshop.controller;
 import com.be_springboot_onlineshop.model.Customers;
 import com.be_springboot_onlineshop.service.CustomersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +24,16 @@ public class CustomersController {
     private CustomersService customersService;
 
     @GetMapping
-    public List<Customers> getAllActiveCustomers() {
-        return customersService.getAllActiveCustomers();
+    public ResponseEntity<?> getAllActiveCustomers(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size) {
+        Page<Customers> activeCustomers = customersService.getAllActiveCustomers(page, size);
+        
+        if (activeCustomers.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data sudah tidak tersedia");
+        }
+        
+        return ResponseEntity.ok(activeCustomers);
     }
 
     @GetMapping("/{id}")
@@ -28,12 +41,6 @@ public class CustomersController {
         Optional<Customers> customer = customersService.getCustomerById(id);
         return customer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    // @PostMapping
-    // public ResponseEntity<Customers> createCustomer(@RequestBody Customers newCustomer) {
-    //     Customers customer = customersService.createCustomer(newCustomer);
-    //     return ResponseEntity.ok(customer);
-    // }
 
     @PostMapping
     public ResponseEntity<Customers> createCustomer(
