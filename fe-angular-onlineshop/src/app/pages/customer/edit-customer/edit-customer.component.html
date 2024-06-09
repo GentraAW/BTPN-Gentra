@@ -1,0 +1,56 @@
+<div>
+  <h1>Edit Pelanggan</h1>
+
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmitForm()">
+    <div>
+      <label>Nama Pelanggan:</label>
+      <input type="text" formControlName="customerName" />
+      <div
+        *ngIf="
+          formGroup.get('customerName')?.invalid &&
+          (formGroup.get('customerName')?.dirty ||
+            formGroup.get('customerName')?.touched)
+        "
+      >
+        <div *ngIf="formGroup.get('customerName')?.errors?.['required']">
+          Nama pelanggan wajib diisi
+        </div>
+        <div *ngIf="formGroup.get('customerName')?.errors?.['minlength']">
+          Nama pelanggan minimal 1 karakter
+        </div>
+        <div *ngIf="formGroup.get('customerName')?.errors?.['maxlength']">
+          Nama pelanggan maksimal 32 karakter
+        </div>
+      </div>
+    </div>
+    <div>
+      <label>Nomor Telepon:</label>
+      <input type="text" formControlName="customerPhone" />
+      <div
+        *ngIf="
+          formGroup.get('customerPhone')?.invalid &&
+          (formGroup.get('customerPhone')?.dirty ||
+            formGroup.get('customerPhone')?.touched)
+        "
+      >
+        <div *ngIf="formGroup.get('customerPhone')?.errors?.['pattern']">
+          Format nomor telepon tidak valid
+        </div>
+      </div>
+    </div>
+    <div>
+      <label>Aktif:</label>
+      <input type="checkbox" formControlName="isActive" />
+    </div>
+    <div>
+      <label>Tanggal Pesanan Terakhir:</label>
+      <input type="date" formControlName="lastOrderDate" />
+      <!-- Add validation messages here if needed -->
+    </div>
+    <div>
+      <label>File:</label>
+      <input type="file" (change)="onFileChange($event)" />
+    </div>
+    <button type="submit">Simpan Perubahan</button>
+  </form>
+</div>

@@ -24,8 +24,11 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@ng-icons/ionicons": "^27.5.2",
+    "@types/yup": "^0.32.0",
+    "formik": "^2.4.6",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "yup": "^1.4.0",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {

@@ -1,11 +1,11 @@
-<div *ngIf="customers.length > 0">
+<div *ngIf="items.length > 0">
   <div>
-    <label for="searchCustomer">Cari Pelanggan:</label>
+    <label for="searchItem">Cari Pelanggan:</label>
     <input
       type="text"
-      id="searchCustomer"
-      [(ngModel)]="searchCustomerName"
-      (input)="searchCustomers()"
+      id="searchItem"
+      [(ngModel)]="searchItemName"
+      (input)="searchItems()"
     />
   </div>
   <div>
@@ -13,22 +13,18 @@
     <select
       id="sortDirection"
       [(ngModel)]="sortDirection"
-      (change)="sortCustomers()"
+      (change)="sortItems()"
     >
       <option value="asc">Ascending</option>
       <option value="desc">Descending</option>
     </select>
   </div>
   <ul>
-    <li *ngFor="let customer of customers">
-      <p>{{ customer.customerId }} - {{ customer.customerName }}</p>
-      <button (click)="goDetailCustomer(customer.customerId)">Detail</button>
-      <button class="m-2" (click)="goEditCustomer(customer.customerId)">
-        Edit
-      </button>
-      <button class="m-2" (click)="deleteCustomer(customer.customerId)">
-        Delete
-      </button>
+    <li *ngFor="let item of items">
+      <p>{{ item.itemId }} - {{ item.itemName }}</p>
+      <button (click)="goDetailItem(item.itemId)">Detail</button>
+      <button class="m-2" (click)="goEditItem(item.itemId)">Edit</button>
+      <button class="m-2" (click)="deleteItem(item.itemId)">Delete</button>
     </li>
   </ul>
   <div>
@@ -47,8 +43,8 @@
       Next
     </button>
   </div>
-  <button class="bg-cyan-100" (click)="goAddCustomer()">Add Customer</button>
+  <button class="bg-cyan-100" (click)="goAddItem()">Add item</button>
 </div>
-<div *ngIf="customers.length === 0">
+<div *ngIf="items.length === 0">
   <p>Data sudah tidak tersedia</p>
 </div>

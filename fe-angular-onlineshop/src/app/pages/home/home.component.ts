@@ -12,11 +12,21 @@ export class HomeComponent implements OnInit {
   totalPages: number = 0
   currentPage: number = 0
   pageSize: number = 2
+  searchCustomerName: string = '' // Tambahkan properti searchCustomerName
+  sortDirection: string = 'asc' // Tambahkan properti sortDirection
 
   constructor(private router: Router) {}
 
-  goToDetail(customerId: number): void {
+  goDetailCustomer(customerId: number): void {
     this.router.navigate(['/detail-customer', customerId])
+  }
+
+  goAddCustomer(): void {
+    this.router.navigate(['/add-customer'])
+  }
+
+  goEditCustomer(customerId: number): void {
+    this.router.navigate(['/edit-customer', customerId])
   }
 
   ngOnInit(): void {
@@ -26,7 +36,7 @@ export class HomeComponent implements OnInit {
   async getCustomers(page: number = 0): Promise<void> {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/customers?page=${page}&size=${this.pageSize}`
+        `http://localhost:8080/api/customers?page=${page}&size=${this.pageSize}&customerName=${this.searchCustomerName}&direction=${this.sortDirection}`
       )
       this.customers = response.data.content
       this.totalPages = response.data.totalPages
@@ -36,7 +46,30 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  async deleteCustomer(customerId: number): Promise<void> {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/api/customers/${customerId}`
+      )
+      console.log('Customer deleted:', response.data)
+      alert('Customer berhasil dihapus')
+      // Refresh data setelah menghapus
+      this.getCustomers(0)
+    } catch (error) {
+      console.error('Error deleting customer:', error)
+      alert('Gagal menghapus Customer')
+    }
+  }
+
   onPageChange(page: number): void {
     this.getCustomers(page - 1) // Karena pagination dimulai dari 1, sedangkan index page dimulai dari 0
+  }
+
+  searchCustomers(): void {
+    this.getCustomers()
+  }
+
+  sortCustomers(): void {
+    this.getCustomers()
   }
 }
