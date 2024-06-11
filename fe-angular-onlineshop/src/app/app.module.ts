@@ -17,9 +17,11 @@ import { AddItemComponent } from './pages/item/add-item/add-item.component'
 import { EditItemComponent } from './pages/item/edit-item/edit-item.component'
 import { DetailItemComponent } from './pages/item/detail-item/detail-item.component'
 import { PagesItemComponent } from './pages/item/pages-item/pages-item.component'
+import { NavbarComponent } from './component/navbar/navbar.component'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { FormsModule } from '@angular/forms'
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +36,8 @@ import { FormsModule } from '@angular/forms'
     AddItemComponent,
     EditItemComponent,
     DetailItemComponent,
-    PagesItemComponent
+    PagesItemComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

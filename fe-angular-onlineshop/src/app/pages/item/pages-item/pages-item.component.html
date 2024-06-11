@@ -1,50 +1,134 @@
-<div *ngIf="items.length > 0">
-  <div>
-    <label for="searchItem">Cari Pelanggan:</label>
-    <input
-      type="text"
-      id="searchItem"
-      [(ngModel)]="searchItemName"
-      (input)="searchItems()"
-    />
+<div class="min-h-screen bg-cyan-50" *ngIf="items.length > 0">
+  <app-navbar></app-navbar>
+  <label class="flex justify-center mt-10 mb-10 text-xl font-extrabold"
+    >Data Item</label
+  >
+  <div class="p-10 mx-56 bg-white rounded-md shadow-md">
+    <div class="flex justify-between mb-5">
+      <input
+        type="text"
+        id="searchItem"
+        placeholder="Find Item"
+        class="p-2 border rounded border-cyan-700"
+        [(ngModel)]="searchItemName"
+        (input)="searchItems()"
+      />
+
+      <button
+        class="p-2 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+        (click)="goAddItem()"
+      >
+        Add Item
+      </button>
+    </div>
+    <div>
+      <div class="flex items-center justify-end mb-4 text-sm">
+        <label for="sortDirection" class="mr-2">Sort By Item Name:</label>
+        <select
+          id="sortDirection"
+          class="p-2 border rounded"
+          [(ngModel)]="sortDirection"
+          (change)="sortItems()"
+        >
+          <option value="asc">A-Z</option>
+          <option value="desc">Z-A</option>
+        </select>
+      </div>
+      <table class="min-w-full bg-white border-collapse">
+        <thead>
+          <tr>
+            <th class="p-2 border-b">Item Name</th>
+            <th class="p-2 border-b">Item Code</th>
+            <th class="p-2 border-b">Stock</th>
+            <th class="p-2 border-b">Price</th>
+            <th class="p-2 border-b">Available</th>
+            <th class="p-2 border-b">Last Re-Stock</th>
+            <th class="p-2 border-b">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items" class="border-b">
+            <td class="p-1 text-center">{{ item.itemName }}</td>
+            <td class="p-1 text-center">
+              {{ item.itemCode }}
+            </td>
+            <td class="p-1 text-center">{{ item.stock }}</td>
+            <td class="p-1 text-center">{{ formatRupiah(item.price) }}</td>
+            <td class="p-1 text-xl text-center">
+              <fa-icon
+                [icon]="item.isAvailable ? faCheck : faTimes"
+                [ngClass]="{
+                  'text-green-500': item.isAvailable,
+                  'text-red-500': !item.isAvailable
+                }"
+              ></fa-icon>
+            </td>
+            <td class="p-1 text-center">{{ item.lastReStock }}</td>
+            <td class="p-1 text-center">
+              <button (click)="goDetailItem(item.itemId)" class="m-2">
+                <fa-icon [icon]="faEye"></fa-icon>
+              </button>
+              <button (click)="goEditItem(item.itemId)" class="m-2">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </button>
+              <button
+                (click)="
+                  openDeleteConfirmationModal(item.itemId, item.itemName)
+                "
+                class="m-2"
+              >
+                <fa-icon [icon]="faTrash"></fa-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="flex justify-end mt-4 text-white text-medium">
+      <button
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)"
+        class="p-2 border rounded bg-cyan-600 hover:bg-cyan-500"
+      >
+        Previous
+      </button>
+      <span class="mx-2 mt-2 text-black"
+        >{{ currentPage }} / {{ totalPages }}</span
+      >
+      <button
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)"
+        class="p-2 border rounded-md bg-cyan-600 hover:bg-cyan-500"
+      >
+        Next
+      </button>
+    </div>
   </div>
-  <div>
-    <label for="sortDirection">Urutkan Berdasarkan:</label>
-    <select
-      id="sortDirection"
-      [(ngModel)]="sortDirection"
-      (change)="sortItems()"
-    >
-      <option value="asc">Ascending</option>
-      <option value="desc">Descending</option>
-    </select>
-  </div>
-  <ul>
-    <li *ngFor="let item of items">
-      <p>{{ item.itemId }} - {{ item.itemName }}</p>
-      <button (click)="goDetailItem(item.itemId)">Detail</button>
-      <button class="m-2" (click)="goEditItem(item.itemId)">Edit</button>
-      <button class="m-2" (click)="deleteItem(item.itemId)">Delete</button>
-    </li>
-  </ul>
-  <div>
-    <button
-      [disabled]="currentPage === 1"
-      (click)="onPageChange(currentPage - 1)"
-    >
-      Previous
-    </button>
-    <span>{{ currentPage }} / {{ totalPages }}</span>
-    <button
-      [disabled]="currentPage === totalPages"
-      (click)="onPageChange(currentPage + 1)"
-      class="bg-cyan-50"
-    >
-      Next
-    </button>
-  </div>
-  <button class="bg-cyan-100" (click)="goAddItem()">Add item</button>
 </div>
-<div *ngIf="items.length === 0">
-  <p>Data sudah tidak tersedia</p>
+<!-- Modal Konfirmasi Hapus -->
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <div class="p-4 bg-white rounded shadow-md">
+    <h2 class="mb-4 text-xl font-bold">Konfirmasi Hapus</h2>
+    <p class="mb-4">
+      Apakah ingin menghapus item
+      <strong>"{{ itemNameToDelete }}"</strong> ?
+    </p>
+    <div class="flex justify-end">
+      <button
+        (click)="closeDeleteConfirmationModal()"
+        class="p-2 mr-2 text-white bg-gray-500 rounded"
+      >
+        No
+      </button>
+      <button
+        (click)="confirmDeleteItem()"
+        class="p-2 text-white bg-red-500 rounded"
+      >
+        Yes
+      </button>
+    </div>
+  </div>
 </div>

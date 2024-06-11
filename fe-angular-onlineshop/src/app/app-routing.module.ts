@@ -12,6 +12,7 @@ import { AddItemComponent } from './pages/item/add-item/add-item.component'
 import { EditItemComponent } from './pages/item/edit-item/edit-item.component'
 import { DetailItemComponent } from './pages/item/detail-item/detail-item.component'
 import { PagesItemComponent } from './pages/item/pages-item/pages-item.component'
+import { NavbarComponent } from './component/navbar/navbar.component'
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,7 +26,8 @@ const routes: Routes = [
   { path: 'add-item', component: AddItemComponent },
   { path: 'edit-item/:itemId', component: EditItemComponent },
   { path: 'detail-item/:itemId', component: DetailItemComponent },
-  { path: 'item', component: PagesItemComponent }
+  { path: 'item', component: PagesItemComponent },
+  { path: 'navbar', component: NavbarComponent }
   // { path: '', component: LoginComponent },
   // { path: 'daftar-makanan', component: DaftarMakananComponent },
   // { path: 'register', component: RegisterComponent },

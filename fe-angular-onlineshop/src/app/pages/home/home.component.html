@@ -1,54 +1,151 @@
-<div *ngIf="customers.length > 0">
-  <div>
-    <label for="searchCustomer">Cari Pelanggan:</label>
-    <input
-      type="text"
-      id="searchCustomer"
-      [(ngModel)]="searchCustomerName"
-      (input)="searchCustomers()"
-    />
-  </div>
-  <div>
-    <label for="sortDirection">Urutkan Berdasarkan:</label>
-    <select
-      id="sortDirection"
-      [(ngModel)]="sortDirection"
-      (change)="sortCustomers()"
-    >
-      <option value="asc">Ascending</option>
-      <option value="desc">Descending</option>
-    </select>
-  </div>
-  <ul>
-    <li *ngFor="let customer of customers">
-      <p>{{ customer.customerId }} - {{ customer.customerName }}</p>
-      <button (click)="goDetailCustomer(customer.customerId)">Detail</button>
-      <button class="m-2" (click)="goEditCustomer(customer.customerId)">
-        Edit
+<div class="min-h-screen bg-cyan-50" *ngIf="customers.length > 0">
+  <app-navbar></app-navbar>
+  <label class="flex justify-center mt-10 mb-10 text-xl font-extrabold"
+    >Data Customer</label
+  >
+  <div class="p-10 mx-56 bg-white rounded-md shadow-md">
+    <div class="flex justify-between mb-5">
+      <input
+        type="text"
+        placeholder="Find Customer"
+        class="p-2 border rounded border-cyan-700"
+        [(ngModel)]="searchCustomerName"
+        (input)="searchCustomers()"
+      />
+      <button
+        class="p-2 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+        (click)="goAddCustomer()"
+      >
+        Add Customer
       </button>
-      <button class="m-2" (click)="deleteCustomer(customer.customerId)">
-        Delete
-      </button>
-    </li>
-  </ul>
-  <div>
-    <button
-      [disabled]="currentPage === 1"
-      (click)="onPageChange(currentPage - 1)"
-    >
-      Previous
-    </button>
-    <span>{{ currentPage }} / {{ totalPages }}</span>
-    <button
-      [disabled]="currentPage === totalPages"
-      (click)="onPageChange(currentPage + 1)"
-      class="bg-cyan-50"
-    >
-      Next
-    </button>
+    </div>
+    <div>
+      <div class="flex items-center justify-end mb-4 text-sm">
+        <label for="sortDirection " class="mr-2">Sort By Name:</label>
+        <select
+          id="sortDirection"
+          class="p-2 border rounded"
+          [(ngModel)]="sortDirection"
+          (change)="sortCustomers()"
+        >
+          <option value="asc">A-Z</option>
+          <option value="desc">Z-A</option>
+        </select>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border-collapse">
+          <thead>
+            <tr>
+              <th class="p-2 border-b">Profile</th>
+              <th class="p-2 border-b">Name</th>
+              <th class="p-2 border-b">Address</th>
+              <th class="p-2 border-b">Customer Code</th>
+              <th class="p-2 border-b">Active</th>
+              <th class="p-2 border-b">Last Order Date</th>
+              <th class="p-2 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let customer of customers" class="border-b">
+              <td class="flex justify-center p-2">
+                <img
+                  *ngIf="customer.pic"
+                  [src]="customer.pic"
+                  alt="Customer Picture"
+                  class="w-20 h-20 rounded-full shadow-2xl"
+                />
+              </td>
+              <td class="p-1 text-center">{{ customer.customerName }}</td>
+              <td class="p-1 text-center">
+                {{ customer.customerAddress }}
+              </td>
+              <td class="p-1 text-center">{{ customer.customerCode }}</td>
+              <td class="p-1 text-xl text-center">
+                <fa-icon
+                  [icon]="customer.isActive ? faCheck : faTimes"
+                  [ngClass]="{
+                    'text-green-500': customer.isActive,
+                    'text-red-500': !customer.isActive
+                  }"
+                ></fa-icon>
+              </td>
+              <td class="p-1 text-center">{{ customer.lastOrderDate }}</td>
+              <td class="p-1 text-center">
+                <button
+                  (click)="goDetailCustomer(customer.customerId)"
+                  class="m-2"
+                >
+                  <fa-icon [icon]="faEye"></fa-icon>
+                </button>
+                <button
+                  (click)="goEditCustomer(customer.customerId)"
+                  class="m-2"
+                >
+                  <fa-icon [icon]="faEdit"></fa-icon>
+                </button>
+                <button
+                  (click)="
+                    openDeleteConfirmationModal(
+                      customer.customerId,
+                      customer.customerName
+                    )
+                  "
+                  class="m-2"
+                >
+                  <fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-end mt-4 text-white text-medium">
+        <button
+          [disabled]="currentPage === 1"
+          (click)="onPageChange(currentPage - 1)"
+          class="p-2 border rounded bg-cyan-600 hover:bg-cyan-500"
+        >
+          Previous
+        </button>
+        <span class="mx-2 mt-2 text-black"
+          >{{ currentPage }} / {{ totalPages }}</span
+        >
+        <button
+          [disabled]="currentPage === totalPages"
+          (click)="onPageChange(currentPage + 1)"
+          class="p-2 border rounded-md bg-cyan-600 hover:bg-cyan-500"
+        >
+          Next
+        </button>
+      </div>
+    </div>
   </div>
-  <button class="bg-cyan-100" (click)="goAddCustomer()">Add Customer</button>
 </div>
-<div *ngIf="customers.length === 0">
-  <p>Data sudah tidak tersedia</p>
+
+<!-- Modal Konfirmasi Hapus -->
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <div class="p-4 bg-white rounded shadow-md">
+    <h2 class="mb-4 text-xl font-bold">Konfirmasi Hapus</h2>
+    <p class="mb-4">
+      Apakah ingin menghapus customer
+      <strong>"{{ customerNameToDelete }}"</strong> ?
+    </p>
+    <div class="flex justify-end">
+      <button
+        (click)="closeDeleteConfirmationModal()"
+        class="p-2 mr-2 text-white bg-gray-500 rounded"
+      >
+        No
+      </button>
+      <button
+        (click)="confirmDeleteCustomer()"
+        class="p-2 text-white bg-red-500 rounded"
+      >
+        Yes
+      </button>
+    </div>
+  </div>
 </div>

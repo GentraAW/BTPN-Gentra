@@ -21,7 +21,12 @@ export class AddCustomersComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
       customerName: [
         '',
-        [Validators.required, Validators.minLength(1), Validators.maxLength(32)]
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(32),
+          Validators.pattern(/^([^0-9]*)$/)
+        ]
       ],
       customerPhone: ['', [Validators.pattern(/^0\d{9,12}$/)]],
       file: [null]

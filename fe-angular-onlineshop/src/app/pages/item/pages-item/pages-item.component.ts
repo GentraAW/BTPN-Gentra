@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core'
 import axios from 'axios'
 import { Router } from '@angular/router'
-
+import {
+  faEye,
+  faEdit,
+  faTrash,
+  faCheck,
+  faTimes
+} from '@fortawesome/free-solid-svg-icons'
 @Component({
   selector: 'app-pages-item',
   templateUrl: './pages-item.component.html',
@@ -11,11 +17,20 @@ export class PagesItemComponent implements OnInit {
   items: any[] = []
   totalPages: number = 0
   currentPage: number = 0
-  pageSize: number = 2
+  pageSize: number = 7
   searchItemName: string = ''
   sortDirection: string = 'asc'
+  isModalOpen: boolean = false
+  itemNameToDelete: string = ''
+  itemIdToDelete: number = 0
 
   constructor(private router: Router) {}
+
+  faEye = faEye
+  faEdit = faEdit
+  faTrash = faTrash
+  faCheck = faCheck
+  faTimes = faTimes
 
   goDetailItem(itemId: number): void {
     this.router.navigate(['/detail-item', itemId])
@@ -46,18 +61,29 @@ export class PagesItemComponent implements OnInit {
     }
   }
 
-  async deleteItem(itemId: number): Promise<void> {
+  openDeleteConfirmationModal(itemId: number, itemName: string): void {
+    this.itemIdToDelete = itemId
+    this.itemNameToDelete = itemName
+    this.isModalOpen = true
+  }
+
+  closeDeleteConfirmationModal(): void {
+    this.isModalOpen = false
+  }
+
+  async confirmDeleteItem(): Promise<void> {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/items/${itemId}`
+        `http://localhost:8080/api/items/${this.itemIdToDelete}`
       )
-      console.log('Item deleted:', response.data)
-      alert('Item berhasil dihapus')
-      // Refresh data setelah menghapus pelanggan
+      console.log('Items deleted:', response.data)
+      alert('Items berhasil dihapus')
       this.getItems(0)
     } catch (error) {
-      console.error('Error deleting Item:', error)
-      alert('Gagal menghapus Item')
+      console.error('Error deleting Items:', error)
+      alert('Gagal menghapus Items')
+    } finally {
+      this.closeDeleteConfirmationModal()
     }
   }
 
@@ -71,5 +97,12 @@ export class PagesItemComponent implements OnInit {
 
   sortItems(): void {
     this.getItems()
+  }
+
+  formatRupiah(amount: number): string {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR'
+    }).format(amount)
   }
 }

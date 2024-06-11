@@ -24,11 +24,15 @@ export class EditCustomerComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
       customerName: [
         '',
-        [Validators.required, Validators.minLength(1), Validators.maxLength(32)]
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(32),
+          Validators.pattern(/^([^0-9]*)$/)
+        ]
       ],
+      customerAddress: ['', [Validators.maxLength(100)]],
       customerPhone: ['', [Validators.pattern(/^0\d{9,12}$/)]],
-      isActive: [false],
-      lastOrderDate: [null],
       file: [null]
     })
 
@@ -44,9 +48,8 @@ export class EditCustomerComponent implements OnInit {
 
       this.formGroup.patchValue({
         customerName: customerData.customerName,
-        customerPhone: customerData.customerPhone,
-        isActive: customerData.isActive,
-        lastOrderDate: customerData.lastOrderDate
+        customerAddress: customerData.customerAddress,
+        customerPhone: customerData.customerPhone
       })
     } catch (error) {
       console.error('Error fetching customer data:', error)
@@ -70,16 +73,12 @@ export class EditCustomerComponent implements OnInit {
       const formData = new FormData()
       formData.append('customerName', this.formGroup.get('customerName')?.value)
       formData.append(
+        'customerAddress',
+        this.formGroup.get('customerAddress')?.value
+      )
+      formData.append(
         'customerPhone',
         this.formGroup.get('customerPhone')?.value
-      )
-      formData.append(
-        'isActive',
-        this.formGroup.get('isActive')?.value.toString()
-      )
-      formData.append(
-        'lastOrderDate',
-        this.formGroup.get('lastOrderDate')?.value ?? ''
       )
       formData.append('file', this.formGroup.get('file')?.value)
 
@@ -93,7 +92,7 @@ export class EditCustomerComponent implements OnInit {
         }
       )
       console.log('Customer updated:', response.data)
-      alert('Customer berhasil ditambahkan')
+      alert('Customer berhasil di updated')
       this.router.navigate([''])
     } catch (error) {
       console.error('Error updating customer:', error)

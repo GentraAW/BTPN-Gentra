@@ -1,14 +1,32 @@
-<div *ngIf="customer">
-  <h1>Customer Detail</h1>
-  <p><strong>ID:</strong> {{ customer.customerId }}</p>
-  <p><strong>Name:</strong> {{ customer.customerName }}</p>
-  <p><strong>Code:</strong> {{ customer.customerCode }}</p>
-  <p><strong>Phone:</strong> {{ customer.customerPhone }}</p>
-  <p><strong>Last Order Date:</strong> {{ customer.lastOrderDate }}</p>
-  <img *ngIf="customer.pic" [src]="customer.pic" alt="Customer Picture" />
-  <button (click)="goToHome()">Back</button>
-</div>
+<div class="min-h-screen bg-cyan-50" *ngIf="customer">
+  <app-navbar></app-navbar>
+  <label class="flex justify-center p-5 mt-10 mb-8 text-xl font-extrabold"
+    >Detail Customer</label
+  >
+  <div
+    class="max-w-[28rem] p-8 mx-auto mt-10 mb-10 bg-white rounded-2xl shadow-xl"
+  >
+    <div class="flex flex-col">
+      <div class="mt-4 mb-2">
+        <img *ngIf="customer.pic" [src]="customer.pic" alt="Customer Picture" />
+      </div>
+      <p><strong>ID:</strong> {{ customer.customerId }}</p>
+      <p><strong>Name:</strong> {{ customer.customerName }}</p>
+      <p><strong>Code:</strong> {{ customer.customerCode }}</p>
+      <p><strong>Phone:</strong> {{ customer.customerPhone }}</p>
+      <p><strong>Last Order Date:</strong> {{ customer.lastOrderDate }}</p>
+      <div class="flex justify-end mt-4">
+        <button
+          class="p-2 px-4 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+          (click)="goToHome()"
+        >
+          Back
+        </button>
+      </div>
+    </div>
+  </div>
 
-<div *ngIf="!customer">
-  <p>No customer details available.</p>
+  <div *ngIf="!customer">
+    <p>No customer details available.</p>
+  </div>
 </div>

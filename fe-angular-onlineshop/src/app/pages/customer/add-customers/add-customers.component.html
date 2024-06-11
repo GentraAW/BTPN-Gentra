@@ -1,47 +1,73 @@
-<div>
-  <h1>Tambah Pelanggan</h1>
+<div class="min-h-screen bg-cyan-50">
+  <app-navbar></app-navbar>
+  <label class="flex justify-center p-5 mt-10 mb-8 text-xl font-extrabold"
+    >Tambah Customer</label
+  >
 
   <form [formGroup]="formGroup" (ngSubmit)="onSubmitForm()">
-    <div>
-      <label>Nama Pelanggan:</label>
-      <input type="text" formControlName="customerName" />
-      <div
-        *ngIf="
-          formGroup.get('customerName')?.invalid &&
-          (formGroup.get('customerName')?.dirty ||
-            formGroup.get('customerName')?.touched)
-        "
-      >
-        <div *ngIf="formGroup.get('customerName')?.errors?.['required']">
-          Nama pelanggan wajib diisi
-        </div>
-        <div *ngIf="formGroup.get('customerName')?.errors?.['minlength']">
-          Nama pelanggan minimal 1 karakter
-        </div>
-        <div *ngIf="formGroup.get('customerName')?.errors?.['maxlength']">
-          Nama pelanggan maksimal 32 karakter
-        </div>
-      </div>
-    </div>
-    <div>
-      <label>Nomor Telepon:</label>
-      <input type="text" formControlName="customerPhone" />
-      <div
-        *ngIf="
-          formGroup.get('customerPhone')?.invalid &&
-          (formGroup.get('customerPhone')?.dirty ||
-            formGroup.get('customerPhone')?.touched)
-        "
-      >
-        <div *ngIf="formGroup.get('customerPhone')?.errors?.['pattern']">
-          Format nomor telepon tidak valid
+    <div
+      class="max-w-[28rem] p-8 mx-auto mt-10 mb-10 bg-white rounded-2xl shadow-xl"
+    >
+      <div class="flex flex-col">
+        <label class="text-base font-bold">Nama Customer:</label>
+        <input
+          type="text"
+          formControlName="customerName"
+          class="p-1 my-2 border rounded-md"
+        />
+        <div
+          class="text-sm text-red-500"
+          *ngIf="
+            formGroup.get('customerName')?.invalid &&
+            (formGroup.get('customerName')?.dirty ||
+              formGroup.get('customerName')?.touched)
+          "
+        >
+          <div *ngIf="formGroup.get('customerName')?.errors?.['required']">
+            Nama pelanggan wajib diisi
+          </div>
+          <div *ngIf="formGroup.get('customerName')?.errors?.['minlength']">
+            Nama pelanggan minimal 1 karakter
+          </div>
+          <div *ngIf="formGroup.get('customerName')?.errors?.['maxlength']">
+            Nama pelanggan maksimal 32 karakter
+          </div>
+          <div *ngIf="formGroup.get('customerName')?.errors?.['pattern']">
+            Nama customer tidak boleh mengandung angka
+          </div>
         </div>
       </div>
+      <div class="flex flex-col">
+        <label class="text-base font-bold">Telepon:</label>
+        <input
+          type="text"
+          formControlName="customerPhone"
+          class="p-1 my-2 border rounded-md"
+        />
+        <div
+          class="text-sm text-red-500"
+          *ngIf="
+            formGroup.get('customerPhone')?.invalid &&
+            (formGroup.get('customerPhone')?.dirty ||
+              formGroup.get('customerPhone')?.touched)
+          "
+        >
+          <div *ngIf="formGroup.get('customerPhone')?.errors?.['pattern']">
+            Format nomor telepon tidak valid
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <label class="text-base font-bold">Foto Profile:</label>
+        <input class="my-2" type="file" (change)="onFileChange($event)" />
+      </div>
+      <div class="flex justify-end">
+        <button
+          class="p-2 px-4 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+        >
+          Add
+        </button>
+      </div>
     </div>
-    <div>
-      <label>File:</label>
-      <input type="file" (change)="onFileChange($event)" />
-    </div>
-    <button type="submit">Tambah Pelanggan</button>
   </form>
 </div>

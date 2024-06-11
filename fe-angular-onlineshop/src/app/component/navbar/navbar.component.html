@@ -1,0 +1,21 @@
+<nav class="flex justify-between p-4 font-semibold text-white bg-cyan-700">
+  <div>
+    <a class="p-2 mx-2 hover:rounded-md hover:bg-cyan-800" routerLink="">
+      <fa-icon [icon]="faUsers"></fa-icon> Customer
+    </a>
+    <a class="p-2 mx-2 hover:rounded-md hover:bg-cyan-800" routerLink="/item">
+      <fa-icon [icon]="faBox"></fa-icon> Item
+    </a>
+    <a class="p-2 mx-2 hover:rounded-md hover:bg-cyan-800" routerLink="/order">
+      <fa-icon [icon]="faShoppingCart"></fa-icon> Order
+    </a>
+  </div>
+  <div>
+    <a
+      class="p-2 mx-2 text-black bg-white rounded-md hover:bg-slate-200"
+      routerLink="/"
+    >
+      <fa-icon [icon]="faFileAlt" class="pr-2"></fa-icon>Report Order
+    </a>
+  </div>
+</nav>

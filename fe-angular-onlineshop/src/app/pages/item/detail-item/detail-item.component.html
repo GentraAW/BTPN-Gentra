@@ -1,1 +1,32 @@
-<p>detail-item works!</p>
+<div class="min-h-screen bg-cyan-50" *ngIf="item">
+  <app-navbar></app-navbar>
+  <label class="flex justify-center p-5 mt-10 mb-8 text-xl font-extrabold"
+    >Detail item</label
+  >
+  <div
+    class="max-w-[28rem] p-8 mx-auto mt-10 mb-10 bg-white rounded-2xl shadow-xl"
+  >
+    <div class="flex flex-col">
+      <div class="mt-2 mb-2">
+        <img *ngIf="item.pic" [src]="item.pic" alt="item Picture" />
+      </div>
+      <p><strong>ID:</strong> {{ item.itemId }}</p>
+      <p><strong>Name:</strong> {{ item.itemName }}</p>
+      <p><strong>Code:</strong> {{ item.itemCode }}</p>
+      <p><strong>Stock:</strong> {{ item.stock }}</p>
+      <p><strong>Last Re-Stock:</strong> {{ item.lastReStock }}</p>
+      <div class="flex justify-end mt-4">
+        <button
+          class="p-2 px-4 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+          (click)="goToPagesItem()"
+        >
+          Back
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!item">
+    <p>No customer details available.</p>
+  </div>
+</div>

@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core'
 import axios from 'axios'
 import { Router } from '@angular/router'
+import {
+  faEye,
+  faEdit,
+  faTrash,
+  faCheck,
+  faTimes
+} from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-home',
@@ -11,11 +18,20 @@ export class HomeComponent implements OnInit {
   customers: any[] = []
   totalPages: number = 0
   currentPage: number = 0
-  pageSize: number = 2
-  searchCustomerName: string = '' // Tambahkan properti searchCustomerName
-  sortDirection: string = 'asc' // Tambahkan properti sortDirection
+  pageSize: number = 4
+  searchCustomerName: string = ''
+  sortDirection: string = 'asc'
+  isModalOpen: boolean = false // For modal visibility
+  customerNameToDelete: string = '' // For storing the name of the customer to delete
+  customerIdToDelete: number = 0 // For storing the id of the customer to delete
 
   constructor(private router: Router) {}
+
+  faEye = faEye
+  faEdit = faEdit
+  faTrash = faTrash
+  faCheck = faCheck
+  faTimes = faTimes
 
   goDetailCustomer(customerId: number): void {
     this.router.navigate(['/detail-customer', customerId])
@@ -40,29 +56,40 @@ export class HomeComponent implements OnInit {
       )
       this.customers = response.data.content
       this.totalPages = response.data.totalPages
-      this.currentPage = response.data.number + 1 // currentPage dimulai dari 1
+      this.currentPage = response.data.number + 1
     } catch (error) {
       console.error('Error fetching customers:', error)
     }
   }
 
-  async deleteCustomer(customerId: number): Promise<void> {
+  openDeleteConfirmationModal(customerId: number, customerName: string): void {
+    this.customerIdToDelete = customerId
+    this.customerNameToDelete = customerName
+    this.isModalOpen = true
+  }
+
+  closeDeleteConfirmationModal(): void {
+    this.isModalOpen = false
+  }
+
+  async confirmDeleteCustomer(): Promise<void> {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/customers/${customerId}`
+        `http://localhost:8080/api/customers/${this.customerIdToDelete}`
       )
       console.log('Customer deleted:', response.data)
       alert('Customer berhasil dihapus')
-      // Refresh data setelah menghapus
       this.getCustomers(0)
     } catch (error) {
       console.error('Error deleting customer:', error)
       alert('Gagal menghapus Customer')
+    } finally {
+      this.closeDeleteConfirmationModal()
     }
   }
 
   onPageChange(page: number): void {
-    this.getCustomers(page - 1) // Karena pagination dimulai dari 1, sedangkan index page dimulai dari 0
+    this.getCustomers(page - 1)
   }
 
   searchCustomers(): void {
