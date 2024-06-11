@@ -1,9 +1,15 @@
 package com.be_springboot_onlineshop.service;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.be_springboot_onlineshop.model.Items;
@@ -14,8 +20,18 @@ public class ItemsService {
     @Autowired
     private ItemsRepo itemsRepo;
 
-    public List<Items> getAllItemsWithAvailable() {
-        return itemsRepo.findByIsAvailable(true);
+    public Page<Items> getAllAvailableItems(int page, int size, String sortBy, String direction, String itemName) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Items> availableItemsPage;
+        if (itemName == null || itemName.isEmpty()) {
+            availableItemsPage = itemsRepo.findByIsAvailable(true, pageable);
+        } else {
+            availableItemsPage = itemsRepo.findByItemNameContainingIgnoreCaseAndIsAvailable(itemName, true, pageable);
+        }
+        
+        return availableItemsPage;
     }
 
     public Optional<Items> getItemByIdAndAvailable(Long itemId) {
@@ -23,6 +39,8 @@ public class ItemsService {
     }
 
     public Items createItem(Items newItem) {
+        newItem.setIsAvailable(true);
+        newItem.setLastReStock(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
         return itemsRepo.save(newItem);
     }
 
@@ -31,8 +49,6 @@ public class ItemsService {
         if (itemOptional.isPresent()) {
             Items item = itemOptional.get();
 
-            // update hanya field yang tidak null, jika null gunakan value seperti
-            // sebelumnya
             if (updatedItem.getItemName() != null) {
                 item.setItemName(updatedItem.getItemName());
             }

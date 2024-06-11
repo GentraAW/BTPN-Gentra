@@ -18,9 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.Date;
 
 @Service
@@ -34,20 +32,20 @@ public class CustomersService {
     @Value("${application.minio.bucketName}")
     private String bucketName;
 
-     // Metode untuk mendapatkan semua customer aktif
-    // public List<Customers> getAllActiveCustomers() {
-    //     List<Customers> activeCustomers = customersRepo.findByIsActive(true);
-    //     return activeCustomers.stream()
-    //         .map(this::setPicUrlIfNeeded)
-    //         .collect(Collectors.toList());
-    // }
-    public Page<Customers> getAllActiveCustomers(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("customerName").ascending());
-        Page<Customers> activeCustomersPage = customersRepo.findByIsActive(true, pageable);
+    public Page<Customers> getAllActiveCustomers(int page, int size, String sortBy, String direction, String customerName) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Customers> activeCustomersPage;
+        if (customerName == null || customerName.isEmpty()) {
+            activeCustomersPage = customersRepo.findByIsActive(true, pageable);
+        } else {
+            activeCustomersPage = customersRepo.findByCustomerNameContainingIgnoreCaseAndIsActive(customerName, true, pageable);
+        }
+        
         return activeCustomersPage.map(this::setPicUrlIfNeeded);
     }
 
-    // Metode untuk mendapatkan customer berdasarkan ID
     public Optional<Customers> getCustomerById(Long customerId) {
         Optional<Customers> customerOptional = customersRepo.findByCustomerIdAndIsActive(customerId, true);
         return customerOptional.map(this::setPicUrlIfNeeded);
@@ -56,36 +54,50 @@ public class CustomersService {
     private Customers setPicUrlIfNeeded(Customers customer) {
         String pic = customer.getPic();
         if (pic != null) {
-            String picUrl = "http://localhost:9000/" + bucketName + "/" + pic; // Ganti dengan URL MinIO yang sesuai
+            String picUrl = "http://localhost:9000/" + bucketName + "/" + pic;
             customer.setPic(picUrl);
         }
         return customer;
     }
     
-    public Customers createCustomer(Customers newCustomer, MultipartFile file) throws Exception {
+     public Customers createCustomer(Customers newCustomer, MultipartFile file) throws Exception {
         long timestamp = new Date().getTime();
 
-        // Mendapatkan nama file asli dan ekstensi
-        String originalFilename = file.getOriginalFilename();
-        String[] fileNameParts = originalFilename.split("\\.");
-        String fileName = fileNameParts[0] + "." + timestamp + "." + fileNameParts[1];
+        String customerPhone = newCustomer.getCustomerPhone();
+        newCustomer.setCustomerCode("CUST-" + customerPhone);
 
-        // Mengunggah file ke MinIO
-        try (InputStream inputStream = file.getInputStream()) {
-            minioClient.putObject(
-                PutObjectArgs.builder()
-                    .bucket(bucketName)
-                    .object(fileName)
-                    .stream(inputStream, file.getSize(), -1)
-                    .contentType(file.getContentType())
-                    .build()
-            );
+        if (newCustomer.getIsActive() == null) {
+            newCustomer.setIsActive(true);
         }
 
-        // Menyimpan nama file ke field pic pada entitas Customers
-        newCustomer.setPic(fileName);
+        if (newCustomer.getLastOrderDate() == null) {
+            newCustomer.setLastOrderDate(new Date());
+        }
 
-        // Menyimpan entitas Customers ke database
+        if (customersRepo.existsByCustomerPhone(customerPhone)) {
+            throw new Exception("Nomor telepon sudah tersedia");
+        }
+
+        if (file != null) {
+            String originalFilename = file.getOriginalFilename();
+            String[] fileNameParts = originalFilename.split("\\.");
+            String fileName = fileNameParts[0] + "." + timestamp + "." + fileNameParts[1];
+
+            try (InputStream inputStream = file.getInputStream()) {
+                minioClient.putObject(
+                    PutObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(fileName)
+                        .stream(inputStream, file.getSize(), -1)
+                        .contentType(file.getContentType())
+                        .build()
+                );
+            }
+
+            newCustomer.setPic(fileName);
+        }
+
+        // Save the new customer to the database
         return customersRepo.save(newCustomer);
     }
 
@@ -97,6 +109,9 @@ public class CustomersService {
             // Update hanya field yang tidak null
             if (updatedCustomer.getCustomerName() != null) {
                 customer.setCustomerName(updatedCustomer.getCustomerName());
+            }
+            if(updatedCustomer.getCustomerAddress() != null) {
+                customer.setCustomerAddress(updatedCustomer.getCustomerAddress());
             }
             if (updatedCustomer.getCustomerCode() != null) {
                 customer.setCustomerCode(updatedCustomer.getCustomerCode());
@@ -147,7 +162,6 @@ public class CustomersService {
 
                 customer.setPic(fileName);
             }
-
 
             return customersRepo.save(customer);
         } else {

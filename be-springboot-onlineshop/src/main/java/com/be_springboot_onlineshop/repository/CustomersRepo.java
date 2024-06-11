@@ -14,4 +14,8 @@ public interface CustomersRepo extends JpaRepository<Customers, Long> {
     Page<Customers> findByIsActive(boolean isActive, Pageable pageable);
 
     Optional<Customers> findByCustomerIdAndIsActive(Long customerId, boolean isActive);
+
+    Page<Customers> findByCustomerNameContainingIgnoreCaseAndIsActive(String customerName, boolean isActive, Pageable pageable);
+    
+    boolean existsByCustomerPhone(String customerPhone);
 }

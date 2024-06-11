@@ -1,11 +1,13 @@
-
 package com.be_springboot_onlineshop.service;
  
-import java.util.List;
 import java.util.Optional;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.be_springboot_onlineshop.model.Customers;
@@ -27,8 +29,18 @@ import com.be_springboot_onlineshop.repository.OrdersRepo;
     @Autowired
     private CustomersRepo customerRepo;
     
-    public List<Orders> getAllOrders() {       
-        return ordersRepo.findAll();
+    public Page<Orders> getAllOrders(int page, int size, String sortBy, String direction, String customerName) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Orders> ordersPage;
+        if (customerName == null || customerName.isEmpty()) {
+            ordersPage = ordersRepo.findAll(pageable);
+        } else {
+            ordersPage = ordersRepo.findByCustomersCustomerNameContainingIgnoreCase(customerName, pageable);
+        }
+
+        return ordersPage;
     }
     
    public Optional<Orders> getOrderById(Long orderId) {

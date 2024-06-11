@@ -4,56 +4,56 @@ import com.be_springboot_onlineshop.model.Customers;
 import com.be_springboot_onlineshop.service.CustomersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/customers")
 public class CustomersController {
+
     @Autowired
     private CustomersService customersService;
 
     @GetMapping
     public ResponseEntity<?> getAllActiveCustomers(
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size) {
-        Page<Customers> activeCustomers = customersService.getAllActiveCustomers(page, size);
-        
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "customerName") String sortBy,
+        @RequestParam(defaultValue = "asc") String direction,
+        @RequestParam(required = false) String customerName) {
+        Page<Customers> activeCustomers = customersService.getAllActiveCustomers(page, size, sortBy, direction, customerName);
+
         if (activeCustomers.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data sudah tidak tersedia");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No active customers found");
         }
-        
+
         return ResponseEntity.ok(activeCustomers);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Customers> getCustomerById(@PathVariable Long id) {
         Optional<Customers> customer = customersService.getCustomerById(id);
-        return customer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return customer.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Customers> createCustomer(
+    public ResponseEntity<?> createCustomer(
             @RequestParam("customerName") String customerName,
-            @RequestParam("customerCode") String customerCode,
             @RequestParam("customerPhone") String customerPhone,
-            @RequestParam("isActive") Boolean isActive,
-            @RequestParam("lastOrderDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date lastOrderDate,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam(value = "isActive", defaultValue = "true") Boolean isActive,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date lastOrderDate,
+            @RequestParam(required = false) MultipartFile file) {
         try {
             Customers newCustomer = new Customers();
             newCustomer.setCustomerName(customerName);
-            newCustomer.setCustomerCode(customerCode);
             newCustomer.setCustomerPhone(customerPhone);
             newCustomer.setIsActive(isActive);
             newCustomer.setLastOrderDate(lastOrderDate);
@@ -61,22 +61,26 @@ public class CustomersController {
             Customers createdCustomer = customersService.createCustomer(newCustomer, file);
             return ResponseEntity.ok(createdCustomer);
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            // Tangkap pengecualian dan kembalikan pesan kesalahan yang sesuai
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Customers> updateCustomerById(
             @PathVariable Long id,
             @RequestParam(required = false) String customerName,
+            @RequestParam(required = false) String customerAddress,
             @RequestParam(required = false) String customerCode,
             @RequestParam(required = false) String customerPhone,
             @RequestParam(required = false) Boolean isActive,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date lastOrderDate,
             @RequestParam(required = false) MultipartFile file) {
-        
+
         Customers updatedCustomer = new Customers();
         updatedCustomer.setCustomerName(customerName);
+        updatedCustomer.setCustomerAddress(customerAddress);
         updatedCustomer.setCustomerCode(customerCode);
         updatedCustomer.setCustomerPhone(customerPhone);
         updatedCustomer.setIsActive(isActive);
@@ -84,13 +88,9 @@ public class CustomersController {
 
         try {
             Customers customer = customersService.updateCustomerById(id, updatedCustomer, file);
-            if (customer != null) {
-                return ResponseEntity.ok(customer);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+            return customer != null ? ResponseEntity.ok(customer) : ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -103,5 +103,4 @@ public class CustomersController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
 }
