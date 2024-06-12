@@ -3,24 +3,24 @@
   <label class="flex justify-center mt-10 mb-10 text-xl font-extrabold"
     >Data Customer</label
   >
-  <div class="p-10 mx-56 bg-white rounded-md shadow-md">
+  <div class="p-10 mx-16 bg-white rounded-md shadow-md laptop:mx-44">
     <div class="flex justify-between mb-5">
       <input
         type="text"
         placeholder="Find Customer"
-        class="p-2 border rounded border-cyan-700"
+        class="w-3/5 p-2 border rounded tablet:w-64 border-cyan-700"
         [(ngModel)]="searchCustomerName"
         (input)="searchCustomers()"
       />
       <button
-        class="p-2 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+        class="p-2 text-xs text-white rounded-md laptop:text-base bg-cyan-600 hover:bg-cyan-500"
         (click)="goAddCustomer()"
       >
         Add Customer
       </button>
     </div>
     <div>
-      <div class="flex items-center justify-end mb-4 text-sm">
+      <div class="flex items-center justify-end mb-4 text-xs laptop:text-sm">
         <label for="sortDirection " class="mr-2">Sort By Name:</label>
         <select
           id="sortDirection"
@@ -34,7 +34,7 @@
       </div>
       <div class="overflow-x-auto">
         <table class="min-w-full bg-white border-collapse">
-          <thead>
+          <thead class="text-sm laptop:text-base">
             <tr>
               <th class="p-2 border-b">Profile</th>
               <th class="p-2 border-b">Name</th>
@@ -42,25 +42,33 @@
               <th class="p-2 border-b">Customer Code</th>
               <th class="p-2 border-b">Active</th>
               <th class="p-2 border-b">Last Order Date</th>
+
               <th class="p-2 border-b">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let customer of customers" class="border-b">
-              <td class="flex justify-center p-2">
+            <tr
+              *ngFor="let customer of customers"
+              class="text-xs border-b tablet:text-sm laptop:text-base"
+            >
+              <td class="flex justify-center p-2 min-w-[6rem]">
                 <img
                   *ngIf="customer.pic"
                   [src]="customer.pic"
                   alt="Customer Picture"
-                  class="w-20 h-20 rounded-full shadow-2xl"
+                  class="transition-all duration-300 rounded-full shadow-2xl w-14 h-14 laptop:w-20 laptop:h-20 hover:w-20 hover:h-20 laptop:hover:w-24 laptop:hover:h-24"
                 />
               </td>
-              <td class="p-1 text-center">{{ customer.customerName }}</td>
-              <td class="p-1 text-center">
+              <td class="p-1 text-center min-w-[6rem]">
+                {{ customer.customerName }}
+              </td>
+              <td class="p-1 text-center min-w-[8rem] max-w-[10rem]">
                 {{ customer.customerAddress }}
               </td>
-              <td class="p-1 text-center">{{ customer.customerCode }}</td>
-              <td class="p-1 text-xl text-center">
+              <td class="p-1 text-center min-w-[8rem]">
+                {{ customer.customerCode }}
+              </td>
+              <td class="p-1 text-xl text-center min-w-[2rem]">
                 <fa-icon
                   [icon]="customer.isActive ? faCheck : faTimes"
                   [ngClass]="{
@@ -69,17 +77,20 @@
                   }"
                 ></fa-icon>
               </td>
-              <td class="p-1 text-center">{{ customer.lastOrderDate }}</td>
-              <td class="p-1 text-center">
+              <td class="p-1 text-center min-w-[8rem]">
+                {{ customer.lastOrderDate | date: 'MMMM d, y, h:mm a' }}
+              </td>
+
+              <td class="p-1 text-center min-w-[7rem]">
                 <button
                   (click)="goDetailCustomer(customer.customerId)"
-                  class="m-2"
+                  class="m-1 laptop:m-2"
                 >
                   <fa-icon [icon]="faEye"></fa-icon>
                 </button>
                 <button
                   (click)="goEditCustomer(customer.customerId)"
-                  class="m-2"
+                  class="m-1 laptop:m-2"
                 >
                   <fa-icon [icon]="faEdit"></fa-icon>
                 </button>
@@ -90,7 +101,7 @@
                       customer.customerName
                     )
                   "
-                  class="m-2"
+                  class="m-1 laptop:m-2"
                 >
                   <fa-icon [icon]="faTrash"></fa-icon>
                 </button>
@@ -99,7 +110,9 @@
           </tbody>
         </table>
       </div>
-      <div class="flex justify-end mt-4 text-white text-medium">
+      <div
+        class="flex justify-end mt-4 text-xs text-white tablet:text-sm laptop:text-base"
+      >
         <button
           [disabled]="currentPage === 1"
           (click)="onPageChange(currentPage - 1)"

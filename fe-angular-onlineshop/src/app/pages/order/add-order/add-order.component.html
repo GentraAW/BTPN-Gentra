@@ -1,2 +1,104 @@
-<app-navbar></app-navbar>
-<p>add-order works!</p>
+<div class="min-h-screen bg-cyan-50">
+  <app-navbar></app-navbar>
+  <label class="flex justify-center p-5 mt-10 mb-8 text-xl font-extrabold"
+    >Tambah Order</label
+  >
+
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmitForm()">
+    <div
+      class="max-w-[28rem] p-8 mx-auto mt-10 mb-10 bg-white rounded-2xl shadow-xl"
+    >
+      <div class="flex flex-col">
+        <label class="text-base font-bold">Customer:</label>
+        <select
+          formControlName="customerId"
+          class="p-1 my-2 overflow-y-auto border rounded-md max-h-40"
+        >
+          <option value="">Pilih Customer</option>
+          <option
+            *ngFor="let customer of customers"
+            [value]="customer.customerId"
+          >
+            {{ customer.customerName }}
+          </option>
+        </select>
+
+        <div
+          class="text-sm text-red-500"
+          *ngIf="
+            formGroup.get('customerId')?.invalid &&
+            (formGroup.get('customerId')?.dirty ||
+              formGroup.get('customerId')?.touched)
+          "
+        >
+          <div *ngIf="formGroup.get('customerId')?.errors?.['required']">
+            Customer wajib dipilih
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-base font-bold">Item:</label>
+        <select
+          formControlName="itemId"
+          class="p-1 my-2 overflow-y-auto border rounded-md max-h-40"
+        >
+          <option value="">Pilih Item</option>
+          <option *ngFor="let item of items" [value]="item.itemId">
+            {{ item.itemName }}
+          </option>
+        </select>
+        <div
+          class="text-sm text-red-500"
+          *ngIf="
+            formGroup.get('itemId')?.invalid &&
+            (formGroup.get('itemId')?.dirty || formGroup.get('itemId')?.touched)
+          "
+        >
+          <div *ngIf="formGroup.get('itemId')?.errors?.['required']">
+            Item wajib dipilih
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-base font-bold">Quantity:</label>
+        <input
+          type="text"
+          formControlName="quantity"
+          class="p-1 my-2 border rounded-md"
+        />
+        <div
+          class="text-sm text-red-500"
+          *ngIf="
+            formGroup.get('quantity')?.invalid &&
+            (formGroup.get('quantity')?.dirty ||
+              formGroup.get('quantity')?.touched)
+          "
+        >
+          <div *ngIf="formGroup.get('quantity')?.errors?.['required']">
+            Quantity wajib diisi
+          </div>
+          <div *ngIf="formGroup.get('quantity')?.errors?.['pattern']">
+            Tidak boleh mengandung huruf
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-4">
+        <button
+          class="p-2 px-4 mr-2 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+          (click)="goToPagesOrder()"
+        >
+          Back
+        </button>
+        <button
+          class="p-2 px-4 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+          type="submit"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

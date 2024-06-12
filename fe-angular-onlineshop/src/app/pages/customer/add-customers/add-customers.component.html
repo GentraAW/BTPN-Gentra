@@ -24,13 +24,13 @@
           "
         >
           <div *ngIf="formGroup.get('customerName')?.errors?.['required']">
-            Nama pelanggan wajib diisi
+            Nama customer wajib diisi
           </div>
           <div *ngIf="formGroup.get('customerName')?.errors?.['minlength']">
-            Nama pelanggan minimal 1 karakter
+            Nama customer minimal 1 karakter
           </div>
           <div *ngIf="formGroup.get('customerName')?.errors?.['maxlength']">
-            Nama pelanggan maksimal 32 karakter
+            Nama customer maksimal 32 karakter
           </div>
           <div *ngIf="formGroup.get('customerName')?.errors?.['pattern']">
             Nama customer tidak boleh mengandung angka
@@ -54,6 +54,32 @@
         >
           <div *ngIf="formGroup.get('customerPhone')?.errors?.['pattern']">
             Format nomor telepon tidak valid
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <label class="text-base font-bold">Address:</label>
+        <input
+          type="text"
+          formControlName="customerAddress"
+          class="p-1 my-2 border rounded-md"
+        />
+        <div
+          class="text-sm text-red-500"
+          *ngIf="
+            formGroup.get('customerAddress')?.invalid &&
+            (formGroup.get('customerAddress')?.dirty ||
+              formGroup.get('customerAddress')?.touched)
+          "
+        >
+          <div *ngIf="formGroup.get('customerAddress')?.errors?.['required']">
+            Address wajib diisi
+          </div>
+          <div *ngIf="formGroup.get('customerAddress')?.errors?.['minlength']">
+            Address minimal 10 karakter
+          </div>
+          <div *ngIf="formGroup.get('customerAddress')?.errors?.['maxlength']">
+            Address maksimal 70 karakter
           </div>
         </div>
       </div>

@@ -39,7 +39,7 @@ export class AddItemComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.minLength(4),
+          Validators.minLength(1),
           Validators.maxLength(14),
           Validators.pattern(/^[1-9][0-9]*$/)
         ]

@@ -43,15 +43,15 @@ public class CustomersService {
             activeCustomersPage = customersRepo.findByCustomerNameContainingIgnoreCaseAndIsActive(customerName, true, pageable);
         }
         
-        return activeCustomersPage.map(this::setPicUrlIfNeeded);
+        return activeCustomersPage.map(this::setPicUrl);
     }
 
     public Optional<Customers> getCustomerById(Long customerId) {
         Optional<Customers> customerOptional = customersRepo.findByCustomerIdAndIsActive(customerId, true);
-        return customerOptional.map(this::setPicUrlIfNeeded);
+        return customerOptional.map(this::setPicUrl);
     }
 
-    private Customers setPicUrlIfNeeded(Customers customer) {
+    private Customers setPicUrl(Customers customer) {
         String pic = customer.getPic();
         if (pic != null) {
             String picUrl = "http://localhost:9000/" + bucketName + "/" + pic;
@@ -60,7 +60,7 @@ public class CustomersService {
         return customer;
     }
     
-     public Customers createCustomer(Customers newCustomer, MultipartFile file) throws Exception {
+    public Customers createCustomer(Customers newCustomer, MultipartFile file) throws Exception {
         long timestamp = new Date().getTime();
 
         String customerPhone = newCustomer.getCustomerPhone();
@@ -97,7 +97,7 @@ public class CustomersService {
             newCustomer.setPic(fileName);
         }
 
-        // Save the new customer to the database
+        // Save csutomer ke database
         return customersRepo.save(newCustomer);
     }
 

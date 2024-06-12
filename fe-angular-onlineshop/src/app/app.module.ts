@@ -10,7 +10,6 @@ import { DetailCustomerComponent } from './pages/customer/detail-customer/detail
 import { AddCustomersComponent } from './pages/customer/add-customers/add-customers.component'
 import { EditCustomerComponent } from './pages/customer/edit-customer/edit-customer.component'
 import { AddOrderComponent } from './pages/order/add-order/add-order.component'
-import { EditOrderComponent } from './pages/order/edit-order/edit-order.component'
 import { DetailOrderComponent } from './pages/order/detail-order/detail-order.component'
 import { PagesOrderComponent } from './pages/order/pages-order/pages-order.component'
 import { AddItemComponent } from './pages/item/add-item/add-item.component'
@@ -21,6 +20,7 @@ import { NavbarComponent } from './component/navbar/navbar.component'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { FormsModule } from '@angular/forms'
+import { EditOrdersComponent } from './pages/order/edit-orders/edit-orders.component'
 
 @NgModule({
   declarations: [
@@ -30,14 +30,14 @@ import { FormsModule } from '@angular/forms'
     AddCustomersComponent,
     EditCustomerComponent,
     AddOrderComponent,
-    EditOrderComponent,
     DetailOrderComponent,
     PagesOrderComponent,
     AddItemComponent,
     EditItemComponent,
     DetailItemComponent,
     PagesItemComponent,
-    NavbarComponent
+    NavbarComponent,
+    EditOrdersComponent
   ],
   imports: [
     BrowserModule,

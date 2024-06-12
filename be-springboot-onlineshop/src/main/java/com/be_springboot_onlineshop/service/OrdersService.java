@@ -2,6 +2,7 @@ package com.be_springboot_onlineshop.service;
  
 import java.util.Optional;
 import java.util.Date;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,65 +44,83 @@ import com.be_springboot_onlineshop.repository.OrdersRepo;
         return ordersPage;
     }
     
-   public Optional<Orders> getOrderById(Long orderId) {
+    public Optional<Orders> getOrderById(Long orderId) {
         return ordersRepo.findByOrderId(orderId);
     }
 
     public Orders createOrder(Orders newOrder) {
-        // Mengambil data item berdasarkan item_id dari newOrder
         Items item = itemsRepo.findById(newOrder.getItems().getItemId()).orElse(null);
-
         Customers customer = customerRepo.findById(newOrder.getCustomers().getCustomerId()).orElse(null);
 
-        // Jika item tidak ditemukan, kembalikan null
         if (item == null) {
             throw new IllegalArgumentException("Item dengan ID " + newOrder.getItems().getItemId() + " tidak ditemukan");
         }
+        if (customer == null) {
+            throw new IllegalArgumentException("Customers dengan ID " + newOrder.getCustomers().getCustomerId() + " tidak ditemukan");
+        }
 
+        if (!item.getIsAvailable()) {
+            throw new IllegalArgumentException("Item dengan ID " + newOrder.getItems().getItemId() + " tidak tersedia");
+        }
+        if (!customer.getIsActive()) {
+            throw new IllegalArgumentException("Customer dengan ID " + newOrder.getCustomers().getCustomerId() + " tidak aktif");
+        }
+
+        // Update stock item
         Integer totalPrice = item.getPrice() * newOrder.getQuantity();
-
         Integer updatedStock = item.getStock() - newOrder.getQuantity();
         item.setStock(updatedStock);
-        item.setLastReStock(new Date()); // Update lastReStock ke tanggal saat ini
+        item.setLastReStock(new Date()); // Update lastReStock ke tanggal sekarang
 
         // Update total price dan stock item pada newOrder
         newOrder.setTotalPrice(totalPrice);
         newOrder.getItems().setStock(updatedStock); // Update stock pada item di newOrder
 
-        if (customer == null) {
-            throw new IllegalArgumentException("Customers dengan ID " + newOrder.getCustomers().getCustomerId() + " tidak ditemukan");
-        }
+        // Update last order date pada customer
         customer.setLastOrderDate(new Date());
 
-        // Simpan order dan item yang telah diupdate
-        ordersRepo.save(newOrder);
+        // Simpan item yang udah di update
         itemsRepo.save(item);
 
-        return newOrder;
+        // Simpan order untuk mendapatkan ID
+        Orders savedOrder = ordersRepo.save(newOrder);
+
+        // Generate order code: ORD-{customerId}-{itemId}-{orderId}
+        String orderCode = "ORD-" + savedOrder.getCustomers().getCustomerId() + "-" + 
+                        savedOrder.getItems().getItemId() + "-" + savedOrder.getOrderId();
+        savedOrder.setOrderCode(orderCode);
+
+        // Simpan order yang telah diupdate dengan orderCode
+        ordersRepo.save(savedOrder);
+
+        return savedOrder;
     }
+
     
     public Orders updateOrderById(Long orderId, Orders updatedOrder) {
         Optional<Orders> orderOptional = ordersRepo.findById(orderId);
+         if (!orderOptional.isPresent()) {
+            throw new IllegalArgumentException("Order dengan ID " + orderId + " tidak ditemukan");
+        }
         if (orderOptional.isPresent()) {
             Orders order = orderOptional.get();
 
             if (updatedOrder.getOrderCode() != null) {
                 order.setOrderCode(updatedOrder.getOrderCode());
             }
-            if (updatedOrder.getOrderDate() != null) {
-                order.setOrderDate(updatedOrder.getOrderDate());
-            }
-            if (updatedOrder.getTotalPrice() != null) {
-                order.setTotalPrice(updatedOrder.getTotalPrice());
-            }
-            if (updatedOrder.getCustomers() != null) {
-                order.setCustomers(updatedOrder.getCustomers());
-            }
-            if (updatedOrder.getItems() != null) {
-                order.setItems(updatedOrder.getItems());
-            }
-            if (updatedOrder.getQuantity() != null) {
-                order.setQuantity(updatedOrder.getQuantity());
+            if (updatedOrder.getQuantity() != null && order.getItems() != null) {
+                Items item = itemsRepo.findById(order.getItems().getItemId()).orElse(null);
+                Customers customer = customerRepo.findById(order.getCustomers().getCustomerId()).orElse(null);
+                if (item != null) {
+                    Integer oldQuantity = order.getQuantity() != null ? order.getQuantity() : 0;
+                    Integer updatedStock = item.getStock() + oldQuantity - updatedOrder.getQuantity();
+                    order.setQuantity(updatedOrder.getQuantity());
+                    Integer totalPrice = item.getPrice() * updatedOrder.getQuantity();
+                    order.setTotalPrice(totalPrice);
+                    item.setStock(updatedStock);
+                    item.setLastReStock(new Date());
+                    customer.setLastOrderDate(new Date());
+                }
             }
 
             return ordersRepo.save(order);
@@ -109,9 +128,17 @@ import com.be_springboot_onlineshop.repository.OrdersRepo;
             return null;
         }
     }
-    
+
     public void deleteOrderById(Long orderId) {
-        if (ordersRepo.existsById(orderId)) {
+        Optional<Orders> orderOptional = ordersRepo.findById(orderId);
+        if (orderOptional.isPresent()) {
+            Orders order = orderOptional.get();
+            Items item = order.getItems();
+            if (item != null) {
+                Integer oldQuantity = order.getQuantity() != null ? order.getQuantity() : 0;
+                item.setStock(item.getStock() + oldQuantity);
+                itemsRepo.save(item);
+            }
             ordersRepo.deleteById(orderId);
         } else {
             throw new IllegalArgumentException("ID dengan nilai " + orderId + " tidak ditemukan");

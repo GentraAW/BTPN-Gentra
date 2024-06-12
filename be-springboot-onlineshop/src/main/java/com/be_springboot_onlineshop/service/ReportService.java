@@ -36,7 +36,7 @@ public class ReportService {
         try {
             List<Orders> orders = ordersRepo.findAll();
 
-            // Memuat dan mengompilasi file JRXML
+            // mengompilasi file JRXML
             File file = ResourceUtils.getFile("classpath:Order.jrxml");
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
 
@@ -45,7 +45,7 @@ public class ReportService {
 
             // Menyiapkan parameter
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("createdBy", "Fouz97");
+            parameters.put("createdBy", "Gen");
 
             // Mengisi laporan dengan data
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);

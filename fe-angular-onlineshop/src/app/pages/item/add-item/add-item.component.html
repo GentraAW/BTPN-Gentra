@@ -24,13 +24,13 @@
           "
         >
           <div *ngIf="formGroup.get('itemName')?.errors?.['required']">
-            Nama pelanggan wajib diisi
+            Nama item wajib diisi
           </div>
           <div *ngIf="formGroup.get('itemName')?.errors?.['minlength']">
-            Nama pelanggan minimal 1 karakter
+            Nama item minimal 3 karakter
           </div>
           <div *ngIf="formGroup.get('itemName')?.errors?.['maxlength']">
-            Nama pelanggan maksimal 32 karakter
+            Nama item maksimal 32 karakter
           </div>
           <div *ngIf="formGroup.get('itemName')?.errors?.['pattern']">
             Hanya boleh mengandung huruf
@@ -53,13 +53,13 @@
           "
         >
           <div *ngIf="formGroup.get('itemCode')?.errors?.['required']">
-            Nama pelanggan wajib diisi
+            Item code wajib diisi
           </div>
           <div *ngIf="formGroup.get('itemCode')?.errors?.['minlength']">
-            Nama pelanggan minimal 5 karakter
+            Item code minimal 5 karakter
           </div>
           <div *ngIf="formGroup.get('itemCode')?.errors?.['maxlength']">
-            Nama pelanggan maksimal 32 karakter
+            Item code maksimal 32 karakter
           </div>
         </div>
       </div>
@@ -74,16 +74,16 @@
           "
         >
           <div *ngIf="formGroup.get('stock')?.errors?.['required']">
-            Price wajib diisi
+            Stock wajib diisi
           </div>
           <div *ngIf="formGroup.get('stock')?.errors?.['pattern']">
-            Hanya boleh mengandung angka
+            Tidak boleh mengandung simbol dan huruf
           </div>
           <div *ngIf="formGroup.get('stock')?.errors?.['minlength']">
-            Price minimal 4 karakter
+            Stock minimal 1 karakter
           </div>
           <div *ngIf="formGroup.get('stock')?.errors?.['maxlength']">
-            Price maksimal 32 karakter
+            Stock maksimal 32 karakter
           </div>
         </div>
       </div>
@@ -102,7 +102,7 @@
             Price wajib diisi
           </div>
           <div *ngIf="formGroup.get('price')?.errors?.['pattern']">
-            Hanya boleh mengandung angka
+            Tidak boleh mengandung simbol dan huruf
           </div>
           <div *ngIf="formGroup.get('price')?.errors?.['minlength']">
             Price minimal 4 karakter

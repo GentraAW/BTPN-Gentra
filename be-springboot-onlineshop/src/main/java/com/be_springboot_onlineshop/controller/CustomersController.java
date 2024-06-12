@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
@@ -28,14 +30,21 @@ public class CustomersController {
         @RequestParam(defaultValue = "customerName") String sortBy,
         @RequestParam(defaultValue = "asc") String direction,
         @RequestParam(required = false) String customerName) {
+
+        // ubah size menjadi Integer.MAX_VALUE untuk menampilkan semua data pada satu halaman.
+        if (size == 5 && !isSizeProvidedByClient()) {
+            size = Integer.MAX_VALUE;
+        }
+
         Page<Customers> activeCustomers = customersService.getAllActiveCustomers(page, size, sortBy, direction, customerName);
 
         if (activeCustomers.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No active customers found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("customer aktif tidak ditemukan");
         }
 
         return ResponseEntity.ok(activeCustomers);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Customers> getCustomerById(@PathVariable Long id) {
@@ -48,6 +57,7 @@ public class CustomersController {
     public ResponseEntity<?> createCustomer(
             @RequestParam("customerName") String customerName,
             @RequestParam("customerPhone") String customerPhone,
+            @RequestParam("customerAddress") String customerAddress,
             @RequestParam(value = "isActive", defaultValue = "true") Boolean isActive,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date lastOrderDate,
             @RequestParam(required = false) MultipartFile file) {
@@ -55,17 +65,16 @@ public class CustomersController {
             Customers newCustomer = new Customers();
             newCustomer.setCustomerName(customerName);
             newCustomer.setCustomerPhone(customerPhone);
+            newCustomer.setCustomerAddress(customerAddress);
             newCustomer.setIsActive(isActive);
             newCustomer.setLastOrderDate(lastOrderDate);
 
             Customers createdCustomer = customersService.createCustomer(newCustomer, file);
             return ResponseEntity.ok(createdCustomer);
         } catch (Exception e) {
-            // Tangkap pengecualian dan kembalikan pesan kesalahan yang sesuai
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<Customers> updateCustomerById(
@@ -102,5 +111,10 @@ public class CustomersController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    private boolean isSizeProvidedByClient() {
+        return !((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+            .getRequest().getParameterMap().containsKey("size");
     }
 }

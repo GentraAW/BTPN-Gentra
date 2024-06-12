@@ -28,6 +28,14 @@ export class AddCustomersComponent implements OnInit {
           Validators.pattern(/^([^0-9]*)$/)
         ]
       ],
+      customerAddress: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(70)
+        ]
+      ],
       customerPhone: ['', [Validators.pattern(/^0\d{9,12}$/)]],
       file: [null]
     })
@@ -49,6 +57,7 @@ export class AddCustomersComponent implements OnInit {
     try {
       const formData = new FormData()
       formData.append('customerName', this.formGroup.value.customerName)
+      formData.append('customerAddress', this.formGroup.value.customerAddress)
       formData.append('customerPhone', this.formGroup.value.customerPhone)
       formData.append('file', this.formGroup.value.file)
 

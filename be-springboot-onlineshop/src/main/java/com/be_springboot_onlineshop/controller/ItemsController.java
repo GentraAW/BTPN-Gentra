@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.be_springboot_onlineshop.model.Items;
 import com.be_springboot_onlineshop.service.ItemsService;
@@ -36,6 +37,12 @@ public class ItemsController {
         @RequestParam(defaultValue = "itemName") String sortBy,
         @RequestParam(defaultValue = "asc") String direction,
         @RequestParam(required = false) String itemName) {
+
+        // ubah size menjadi Integer.MAX_VALUE untuk menampilkan semua data pada satu halaman.
+        if (size == 5 && !isSizeProvidedByClient()) {
+            size = Integer.MAX_VALUE;
+        }
+
         Page<Items> availableItems = itemsService.getAllAvailableItems(page, size, sortBy, direction, itemName);
 
         if (availableItems.isEmpty()) {
@@ -50,22 +57,6 @@ public class ItemsController {
         Optional<Items> item = itemsService.getItemByIdAndAvailable(id);
         return item.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    // @PostMapping
-    // public ResponseEntity<Items> createItem(@RequestBody Items newItem) {
-    //     Items item = itemsService.createItem(newItem);
-    //     return ResponseEntity.ok(item);
-    // }
-
-    // @PutMapping("/{id}")
-    // public ResponseEntity<Items> updateItemById(@PathVariable Long id, @RequestBody Items updatedItem) {
-    //     Items item = itemsService.updateItemById(id, updatedItem);
-    //     if (item != null) {
-    //         return ResponseEntity.ok(item);
-    //     } else {
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
 
     @PostMapping
     public Items createItem(
@@ -118,5 +109,10 @@ public class ItemsController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    private boolean isSizeProvidedByClient() {
+        return !((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+            .getRequest().getParameterMap().containsKey("size");
     }
 }

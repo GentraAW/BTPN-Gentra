@@ -40,11 +40,13 @@ public class ItemsService {
 
     public Items createItem(Items newItem) {
         newItem.setIsAvailable(true);
-        newItem.setLastReStock(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
+        newItem.setLastReStock(new Date());
+        // newItem.setLastReStock(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
         return itemsRepo.save(newItem);
     }
 
     public Items updateItemById(Long itemId, Items updatedItem) {
+        
         Optional<Items> itemOptional = itemsRepo.findById(itemId);
         if (itemOptional.isPresent()) {
             Items item = itemOptional.get();

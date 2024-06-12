@@ -3,26 +3,25 @@
   <label class="flex justify-center mt-10 mb-10 text-xl font-extrabold"
     >Data Item</label
   >
-  <div class="p-10 mx-56 bg-white rounded-md shadow-md">
+  <div class="p-10 mx-16 bg-white rounded-md shadow-md laptop:mx-44">
     <div class="flex justify-between mb-5">
       <input
         type="text"
         id="searchItem"
         placeholder="Find Item"
-        class="p-2 border rounded border-cyan-700"
+        class="w-3/5 p-2 border rounded tablet:w-64 border-cyan-700"
         [(ngModel)]="searchItemName"
         (input)="searchItems()"
       />
-
       <button
-        class="p-2 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+        class="p-2 text-xs text-white rounded-md laptop:text-base bg-cyan-600 hover:bg-cyan-500"
         (click)="goAddItem()"
       >
         Add Item
       </button>
     </div>
     <div>
-      <div class="flex items-center justify-end mb-4 text-sm">
+      <div class="flex items-center justify-end mb-4 text-xs laptop:text-sm">
         <label for="sortDirection" class="mr-2">Sort By Item Name:</label>
         <select
           id="sortDirection"
@@ -34,57 +33,74 @@
           <option value="desc">Z-A</option>
         </select>
       </div>
-      <table class="min-w-full bg-white border-collapse">
-        <thead>
-          <tr>
-            <th class="p-2 border-b">Item Name</th>
-            <th class="p-2 border-b">Item Code</th>
-            <th class="p-2 border-b">Stock</th>
-            <th class="p-2 border-b">Price</th>
-            <th class="p-2 border-b">Available</th>
-            <th class="p-2 border-b">Last Re-Stock</th>
-            <th class="p-2 border-b">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of items" class="border-b">
-            <td class="p-1 text-center">{{ item.itemName }}</td>
-            <td class="p-1 text-center">
-              {{ item.itemCode }}
-            </td>
-            <td class="p-1 text-center">{{ item.stock }}</td>
-            <td class="p-1 text-center">{{ formatRupiah(item.price) }}</td>
-            <td class="p-1 text-xl text-center">
-              <fa-icon
-                [icon]="item.isAvailable ? faCheck : faTimes"
-                [ngClass]="{
-                  'text-green-500': item.isAvailable,
-                  'text-red-500': !item.isAvailable
-                }"
-              ></fa-icon>
-            </td>
-            <td class="p-1 text-center">{{ item.lastReStock }}</td>
-            <td class="p-1 text-center">
-              <button (click)="goDetailItem(item.itemId)" class="m-2">
-                <fa-icon [icon]="faEye"></fa-icon>
-              </button>
-              <button (click)="goEditItem(item.itemId)" class="m-2">
-                <fa-icon [icon]="faEdit"></fa-icon>
-              </button>
-              <button
-                (click)="
-                  openDeleteConfirmationModal(item.itemId, item.itemName)
-                "
-                class="m-2"
-              >
-                <fa-icon [icon]="faTrash"></fa-icon>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border-collapse">
+          <thead class="text-sm laptop:text-base">
+            <tr>
+              <th class="p-2 border-b">Item Name</th>
+              <th class="p-2 border-b">Item Code</th>
+              <th class="p-2 border-b">Stock</th>
+              <th class="p-2 border-b">Price</th>
+              <th class="p-2 border-b">Available</th>
+              <th class="p-2 border-b">Last Re-Stock</th>
+              <th class="p-2 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let item of items"
+              class="text-xs border-b tablet:text-sm laptop:text-base"
+            >
+              <td class="p-1 text-center min-w-[6rem]">{{ item.itemName }}</td>
+              <td class="p-1 text-center min-w-[6rem]">
+                {{ item.itemCode }}
+              </td>
+              <td class="p-1 text-center min-w-[2rem]">{{ item.stock }}</td>
+              <td class="p-1 text-center min-w-[6rem]">
+                {{ formatRupiah(item.price) }}
+              </td>
+              <td class="text-xl p-1 text-center min-w-[4rem]">
+                <fa-icon
+                  [icon]="item.isAvailable ? faCheck : faTimes"
+                  [ngClass]="{
+                    'text-green-500': item.isAvailable,
+                    'text-red-500': !item.isAvailable
+                  }"
+                ></fa-icon>
+              </td>
+              <td class="p-1 text-center min-w-[7rem]">
+                {{ item.lastReStock | date: 'MMMM d, y, h:mm a' }}
+              </td>
+              <td class="p-1 text-center min-w-[7em]">
+                <button
+                  (click)="goDetailItem(item.itemId)"
+                  class="m-1 laptop:m-2"
+                >
+                  <fa-icon [icon]="faEye"></fa-icon>
+                </button>
+                <button
+                  (click)="goEditItem(item.itemId)"
+                  class="m-1 laptop:m-2"
+                >
+                  <fa-icon [icon]="faEdit"></fa-icon>
+                </button>
+                <button
+                  (click)="
+                    openDeleteConfirmationModal(item.itemId, item.itemName)
+                  "
+                  class="m-1 laptop:m-2"
+                >
+                  <fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="flex justify-end mt-4 text-white text-medium">
+    <div
+      class="flex justify-end mt-4 text-xs text-white tablet:text-sm laptop:text-base"
+    >
       <button
         [disabled]="currentPage === 1"
         (click)="onPageChange(currentPage - 1)"

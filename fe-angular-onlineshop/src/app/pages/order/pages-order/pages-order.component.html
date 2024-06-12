@@ -1,2 +1,151 @@
-<app-navbar></app-navbar>
-<p>pages-order works!</p>
+<div class="min-h-screen bg-cyan-50" *ngIf="orders.length > 0">
+  <app-navbar></app-navbar>
+  <label class="flex justify-center mt-10 mb-10 text-xl font-extrabold"
+    >Data Order</label
+  >
+  <div class="p-10 mx-16 bg-white rounded-md shadow-md laptop:mx-44">
+    <div class="flex justify-between mb-5">
+      <input
+        type="text"
+        placeholder="Find Customer Order"
+        class="w-3/5 p-2 border rounded tablet:w-64 border-cyan-700"
+        [(ngModel)]="searchOrderCustomerName"
+        (input)="searchOrders()"
+      />
+
+      <button
+        class="p-2 text-xs text-white rounded-md laptop:text-base bg-cyan-600 hover:bg-cyan-500"
+        (click)="goAddOrder()"
+      >
+        Add Order
+      </button>
+    </div>
+    <div class="overflow-x-auto">
+      <div>
+        <div class="flex items-center justify-end mb-4 text-xs laptop:text-sm">
+          <label for="sortDirection" class="mr-2">Sort By Order Date:</label>
+          <select
+            id="sortDirection"
+            class="p-2 border rounded"
+            [(ngModel)]="sortDirection"
+            (change)="sortOrders()"
+          >
+            <option value="asc">Old-New</option>
+            <option value="desc">New-Old</option>
+          </select>
+        </div>
+        <table class="min-w-full bg-white border-collapse">
+          <thead class="text-sm laptop:text-base">
+            <tr>
+              <th class="p-2 border-b">Order Code</th>
+              <th class="p-2 border-b">Order Date</th>
+              <th class="p-2 border-b">Customer Order</th>
+              <th class="p-2 border-b">Item Name</th>
+              <th class="p-2 border-b">Quantity</th>
+              <th class="p-2 border-b">Total Price</th>
+              <th class="p-2 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let order of orders"
+              class="text-xs border-b tablet:text-sm laptop:text-base"
+            >
+              <td class="p-1 text-center min-w-[6rem]">
+                {{ order.orderCode }}
+              </td>
+              <td class="p-1 text-center min-w-[6rem]">
+                {{ order.orderDate | date: 'MMMM d, y, h:mm a' }}
+              </td>
+              <td class="p-1 text-center min-w-[8rem]">
+                {{ order.customers.customerName }}
+              </td>
+              <td class="p-1 text-center min-w-[6rem]">
+                {{ order.items.itemName }}
+              </td>
+              <td class="p-1 text-center min-w-[6rem]">{{ order.quantity }}</td>
+              <td class="p-1 text-center min-w-[6rem]">
+                {{ formatRupiah(order.totalPrice) }}
+              </td>
+              <td class="p-1 text-center min-w-[6rem]">
+                <button (click)="goDetailOrder(order.orderId)" class="m-2">
+                  <fa-icon [icon]="faEye"></fa-icon>
+                </button>
+                <button
+                  (click)="goEditOrder(order.orderId)"
+                  class="m-1 laptop:m-2"
+                >
+                  <fa-icon [icon]="faEdit"></fa-icon>
+                </button>
+                <button
+                  (click)="
+                    openDeleteConfirmationModal(order.orderId, order.orderCode)
+                  "
+                  class="m-1 laptop:m-2"
+                >
+                  <fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      class="flex justify-end mt-4 text-xs text-white tablet:text-sm laptop:text-base"
+    >
+      <button
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)"
+        class="p-2 border rounded bg-cyan-600 hover:bg-cyan-500"
+      >
+        Previous
+      </button>
+      <span class="mx-2 mt-2 text-black"
+        >{{ currentPage }} / {{ totalPages }}</span
+      >
+      <button
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)"
+        class="p-2 border rounded-md bg-cyan-600 hover:bg-cyan-500"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+  <div class="mt-8 ml-16 laptop:ml-44">
+    <a
+      class="p-2 text-white bg-green-500 rounded-md laptop:p-3 hover:bg-green-300"
+      (click)="downloadReport()"
+    >
+      <fa-icon [icon]="faFileAlt" class="pr-2"></fa-icon>Report Order
+    </a>
+  </div>
+</div>
+<!-- Modal Konfirmasi Hapus -->
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <div class="p-4 bg-white rounded shadow-md">
+    <h2 class="mb-4 text-xl font-bold">Konfirmasi Hapus</h2>
+    <p class="mb-4">
+      Apakah ingin menghapus Order
+      <strong>"{{ orderNameToDelete }}"</strong> ?
+    </p>
+    <div class="flex justify-end">
+      <button
+        (click)="closeDeleteConfirmationModal()"
+        class="p-2 mr-2 text-white bg-gray-500 rounded"
+      >
+        No
+      </button>
+      <button
+        (click)="confirmDeleteOrder()"
+        class="p-2 text-white bg-red-500 rounded"
+      >
+        Yes
+      </button>
+    </div>
+  </div>
+</div>

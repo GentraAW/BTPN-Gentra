@@ -21,9 +21,9 @@ export class HomeComponent implements OnInit {
   pageSize: number = 4
   searchCustomerName: string = ''
   sortDirection: string = 'asc'
-  isModalOpen: boolean = false // For modal visibility
-  customerNameToDelete: string = '' // For storing the name of the customer to delete
-  customerIdToDelete: number = 0 // For storing the id of the customer to delete
+  isModalOpen: boolean = false
+  customerNameToDelete: string = ''
+  customerIdToDelete: number = 0
 
   constructor(private router: Router) {}
 

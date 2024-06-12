@@ -1,2 +1,45 @@
-<app-navbar></app-navbar>
-<p>detail-order works!</p>
+<div class="min-h-screen bg-cyan-50" *ngIf="order">
+  <app-navbar></app-navbar>
+  <label class="flex justify-center p-5 mt-10 mb-8 text-xl font-extrabold"
+    >Detail Order</label
+  >
+  <div
+    class="max-w-[28rem] p-8 mx-auto mt-10 mb-10 bg-white rounded-2xl shadow-xl"
+  >
+    <div class="flex flex-col">
+      <div class="mt-2 mb-2">
+        <img *ngIf="order.pic" [src]="order.pic" alt="order Picture" />
+      </div>
+      <p><strong>ID:</strong> {{ order.orderId }}</p>
+      <p><strong>Order Code:</strong> {{ order.orderCode }}</p>
+      <p>
+        <strong>Order Date:</strong>
+        {{ order.orderDate | date: 'MMMM d, y, h:mm a' }}
+      </p>
+      <p><strong>Total Price:</strong> {{ order.totalPrice }}</p>
+      <hr class="my-2 border-gray-200" />
+      <p><strong>Customer Id:</strong> {{ order.customers.customerId }}</p>
+      <p><strong>Customer Name:</strong> {{ order.customers.customerName }}</p>
+      <p>
+        <strong>Customer Address:</strong> {{ order.customers.customerAddress }}
+      </p>
+      <p><strong>Phone:</strong> {{ order.customers.customerPhone }}</p>
+      <hr class="my-2 border-gray-200" />
+      <p><strong>Item Id:</strong> {{ order.items.itemId }}</p>
+      <p><strong>Item Name:</strong> {{ order.items.itemName }}</p>
+
+      <div class="flex justify-end mt-4">
+        <button
+          class="p-2 px-4 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+          (click)="goToPagesOrder()"
+        >
+          Back
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!order">
+    <p>No order details available.</p>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+<div class="min-h-screen bg-cyan-50">
+  <app-navbar></app-navbar>
+  <label class="flex justify-center p-5 mt-10 mb-8 text-xl font-extrabold"
+    >Edit Order</label
+  >
+
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmitForm()">
+    <div
+      class="max-w-[28rem] p-8 mx-auto mt-10 mb-10 bg-white rounded-2xl shadow-xl"
+    >
+      <div class="flex flex-col">
+        <label class="text-base font-bold">Order Code:</label>
+        <input
+          type="text"
+          formControlName="orderCode"
+          class="p-1 my-2 border rounded-md"
+        />
+        <div
+          class="text-sm text-red-500"
+          *ngIf="
+            formGroup.get('orderCode')?.invalid &&
+            (formGroup.get('orderCode')?.dirty ||
+              formGroup.get('orderCode')?.touched)
+          "
+        >
+          <div *ngIf="formGroup.get('orderCode')?.errors?.['required']">
+            Order Code wajib diisi
+          </div>
+          <div *ngIf="formGroup.get('orderCode')?.errors?.['minlength']">
+            Order Code minimal 4 karakter
+          </div>
+          <div *ngIf="formGroup.get('orderCode')?.errors?.['maxlength']">
+            Order Code maksimal 32 karakter
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-base font-bold">Quantity:</label>
+        <input class="p-1 my-2 border rounded-md" formControlName="quantity" />
+        <div
+          class="text-sm text-red-500"
+          *ngIf="
+            formGroup.get('quantity')?.invalid &&
+            (formGroup.get('quantity')?.dirty ||
+              formGroup.get('quantity')?.touched)
+          "
+        >
+          <div *ngIf="formGroup.get('quantity')?.errors?.['required']">
+            Quantiy wajib diisi
+          </div>
+          <div *ngIf="formGroup.get('quantity')?.errors?.['pattern']">
+            Hanya boleh mengandung angka
+          </div>
+          <div *ngIf="formGroup.get('quantity')?.errors?.['maxlength']">
+            Quantiy maksimal 32 karakter
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-4">
+        <button
+          class="p-2 px-4 mr-2 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+          (click)="goToPagesOrder()"
+        >
+          Back
+        </button>
+        <button
+          class="p-2 px-4 text-white rounded-md bg-cyan-600 hover:bg-cyan-500"
+          type="submit"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
