@@ -130,4 +130,8 @@ export class PagesOrderComponent implements OnInit {
       alert('Gagal mengunduh laporan')
     }
   }
+
+  pageSizeOrders(): void {
+    this.getOrders()
+  }
 }

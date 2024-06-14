@@ -99,6 +99,10 @@ export class PagesItemComponent implements OnInit {
     this.getItems()
   }
 
+  pageSizeItems(): void {
+    this.getItems()
+  }
+
   formatRupiah(amount: number): string {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',

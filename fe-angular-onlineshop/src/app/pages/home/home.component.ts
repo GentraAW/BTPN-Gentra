@@ -99,4 +99,8 @@ export class HomeComponent implements OnInit {
   sortCustomers(): void {
     this.getCustomers()
   }
+
+  pageSizeCustomers(): void {
+    this.getCustomers()
+  }
 }

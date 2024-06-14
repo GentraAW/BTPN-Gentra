@@ -99,27 +99,43 @@
       </div>
     </div>
     <div
-      class="flex justify-end mt-4 text-xs text-white tablet:text-sm laptop:text-base"
-    >
-      <button
-        [disabled]="currentPage === 1"
-        (click)="onPageChange(currentPage - 1)"
-        class="p-2 border rounded bg-cyan-600 hover:bg-cyan-500"
+        class="flex justify-between mt-4 text-xs text-white tablet:text-sm laptop:text-base"
       >
-        Previous
-      </button>
-      <span class="mx-2 mt-2 text-black"
-        >{{ currentPage }} / {{ totalPages }}</span
-      >
-      <button
-        [disabled]="currentPage === totalPages"
-        (click)="onPageChange(currentPage + 1)"
-        class="p-2 border rounded-md bg-cyan-600 hover:bg-cyan-500"
-      >
-        Next
-      </button>
-    </div>
+      <div class="text-black">
+        <label for="pageSize" class="mr-2">Entries:</label>
+        <select
+          class="p-2 border rounded"
+          [(ngModel)]="pageSize"
+          (change)="pageSizeItems()"
+          defaultValue="7"
+        >
+          <option value="7">7</option>
+          <option value="15">15</option>
+          <option value="30">30</option>
+        </select>
+      </div>
+        <div>
+          <button
+          [disabled]="currentPage === 1"
+          (click)="onPageChange(currentPage - 1)"
+          class="p-2 border rounded bg-cyan-600 hover:bg-cyan-500"
+        >
+          Previous
+        </button>
+        <span class="mx-2 mt-2 text-black"
+          >{{ currentPage }} / {{ totalPages }}</span
+        >
+        <button
+          [disabled]="currentPage === totalPages"
+          (click)="onPageChange(currentPage + 1)"
+          class="p-2 border rounded-md bg-cyan-600 hover:bg-cyan-500"
+        >
+          Next
+        </button>
+        </div>
+      </div>
   </div>
+  <div class="p-5"></div>
 </div>
 <!-- Modal Konfirmasi Hapus -->
 <div
@@ -147,4 +163,5 @@
       </button>
     </div>
   </div>
+  
 </div>
