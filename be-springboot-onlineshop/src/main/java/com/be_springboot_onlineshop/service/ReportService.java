@@ -40,17 +40,16 @@ public class ReportService {
             File file = ResourceUtils.getFile("classpath:Order.jrxml");
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
 
-            // Membuat data source
+            //buat data source
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(orders);
 
-            // Menyiapkan parameter
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("createdBy", "Gen");
 
-            // Mengisi laporan dengan data
+            // isi laporan dengan data
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
-            // Mengekspor laporan ke byte array
+            // eksport laporan ke byte array
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             if (reportFormat.equalsIgnoreCase("pdf")) {
                 JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
@@ -58,7 +57,6 @@ public class ReportService {
                 return ResponseEntity.badRequest().body(null);
             }
 
-            // Menyiapkan respons dengan header yang sesuai
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDispositionFormData("inline", "Order.pdf");

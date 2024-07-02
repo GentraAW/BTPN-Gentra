@@ -38,7 +38,6 @@ public class ItemsController {
         @RequestParam(defaultValue = "asc") String direction,
         @RequestParam(required = false) String itemName) {
 
-        // ubah size menjadi Integer.MAX_VALUE untuk menampilkan semua data pada satu halaman.
         if (size == 5 && !isSizeProvidedByClient()) {
             size = Integer.MAX_VALUE;
         }
@@ -85,7 +84,7 @@ public class ItemsController {
         @RequestParam(required = false) Integer stock,
         @RequestParam(required = false) Integer price,
         @RequestParam(required = false) Boolean isAvailable,
-        @RequestParam(required = false) String lastReStock // Expected in ISO-8601 format
+        @RequestParam(required = false) String lastReStock 
     ) {
         Items updatedItem = new Items();
         updatedItem.setItemName(itemName);

@@ -2,7 +2,6 @@ package com.be_springboot_onlineshop.service;
  
 import java.util.Optional;
 import java.util.Date;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -66,36 +65,28 @@ import com.be_springboot_onlineshop.repository.OrdersRepo;
             throw new IllegalArgumentException("Customer dengan ID " + newOrder.getCustomers().getCustomerId() + " tidak aktif");
         }
 
-        // Update stock item
         Integer totalPrice = item.getPrice() * newOrder.getQuantity();
         Integer updatedStock = item.getStock() - newOrder.getQuantity();
         item.setStock(updatedStock);
-        item.setLastReStock(new Date()); // Update lastReStock ke tanggal sekarang
+        item.setLastReStock(new Date());
 
-        // Update total price dan stock item pada newOrder
         newOrder.setTotalPrice(totalPrice);
-        newOrder.getItems().setStock(updatedStock); // Update stock pada item di newOrder
+        newOrder.getItems().setStock(updatedStock);
 
-        // Update last order date pada customer
         customer.setLastOrderDate(new Date());
 
-        // Simpan item yang udah di update
         itemsRepo.save(item);
 
-        // Simpan order untuk mendapatkan ID
         Orders savedOrder = ordersRepo.save(newOrder);
 
-        // Generate order code: ORD-{customerId}-{itemId}-{orderId}
         String orderCode = "ORD-" + savedOrder.getCustomers().getCustomerId() + "-" + 
                         savedOrder.getItems().getItemId() + "-" + savedOrder.getOrderId();
         savedOrder.setOrderCode(orderCode);
 
-        // Simpan order yang telah diupdate dengan orderCode
         ordersRepo.save(savedOrder);
 
         return savedOrder;
     }
-
     
     public Orders updateOrderById(Long orderId, Orders updatedOrder) {
         Optional<Orders> orderOptional = ordersRepo.findById(orderId);
@@ -141,7 +132,7 @@ import com.be_springboot_onlineshop.repository.OrdersRepo;
             }
             ordersRepo.deleteById(orderId);
         } else {
-            throw new IllegalArgumentException("ID dengan nilai " + orderId + " tidak ditemukan");
+            throw new IllegalArgumentException("Order Id : " + orderId + " tidak ditemukan");
         }
     }
 }

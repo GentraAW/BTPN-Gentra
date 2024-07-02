@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core'
-import { BrowserModule } from '@angular/platform-browser'
+// import { BrowserModule } from '@angular/platform-browser'
 import { ReactiveFormsModule } from '@angular/forms'
 import { AppRoutingModule } from './app-routing.module'
 import { CommonModule } from '@angular/common'
-import { MatCardModule } from '@angular/material/card'
 import { AppComponent } from './app.component'
 import { HomeComponent } from './pages/home/home.component'
 import { DetailCustomerComponent } from './pages/customer/detail-customer/detail-customer.component'
@@ -40,9 +39,7 @@ import { EditOrdersComponent } from './pages/order/edit-orders/edit-orders.compo
     EditOrdersComponent
   ],
   imports: [
-    BrowserModule,
     AppRoutingModule,
-    MatCardModule,
     BrowserAnimationsModule,
     FontAwesomeModule,
     ReactiveFormsModule,

@@ -39,7 +39,7 @@ export class EditItemComponent implements OnInit {
         '',
         [Validators.required, Validators.minLength(5), Validators.maxLength(32)]
       ],
-      stock: ['', [Validators.maxLength(10)]],
+      stock: ['', [Validators.maxLength(10), Validators.pattern(/^[0-9]+$/)]],
       price: [
         '',
         [
@@ -49,7 +49,7 @@ export class EditItemComponent implements OnInit {
           Validators.pattern(/^[0-9]+$/)
         ]
       ],
-      lastReStock: [null] // tambahkan field lastReStock dalam FormGroup
+      lastReStock: [null]
     })
 
     this.loadItemData()
@@ -91,10 +91,8 @@ export class EditItemComponent implements OnInit {
       formData.append('stock', this.formGroup.get('stock')?.value)
       formData.append('price', this.formGroup.get('price')?.value)
 
-      // Ambil nilai tanggal dari formulir
       let lastReStock = this.formGroup.get('lastReStock')?.value
 
-      // Jika nilai tanggal ada, tambahkan waktu saat ini
       if (lastReStock) {
         const currentDate = new Date(lastReStock)
         const now = new Date()
@@ -104,18 +102,16 @@ export class EditItemComponent implements OnInit {
         currentDate.setSeconds(now.getSeconds())
         currentDate.setMilliseconds(now.getMilliseconds())
 
-        // Tambahkan offset UTC+7
         const indonesiaTime = new Date(
           currentDate.getTime() + 7 * 60 * 60 * 1000
         )
 
-        // Konversi ke string ISO
         lastReStock = indonesiaTime.toISOString()
       }
 
       formData.append('lastReStock', lastReStock)
 
-      console.log('Item data yang akan disimpan:', formData) // Log data yang akan disimpan
+      console.log('Item data yang akan disimpan:', formData)
 
       const response = await axios.put(
         `http://localhost:8080/api/items/${this.itemId}`,
@@ -127,7 +123,7 @@ export class EditItemComponent implements OnInit {
         }
       )
 
-      console.log('Item yang berhasil diupdate:', response.data) // Log data yang berhasil diupdate
+      console.log('Item yang berhasil diupdate:', response.data)
 
       alert('Item berhasil diupdate')
       this.router.navigate(['/item'])

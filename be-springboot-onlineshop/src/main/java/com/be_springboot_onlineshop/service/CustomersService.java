@@ -97,7 +97,6 @@ public class CustomersService {
             newCustomer.setPic(fileName);
         }
 
-        // Save csutomer ke database
         return customersRepo.save(newCustomer);
     }
 

@@ -30,8 +30,6 @@ public class CustomersController {
         @RequestParam(defaultValue = "customerName") String sortBy,
         @RequestParam(defaultValue = "asc") String direction,
         @RequestParam(required = false) String customerName) {
-
-        // ubah size menjadi Integer.MAX_VALUE untuk menampilkan semua data pada satu halaman.
         if (size == 5 && !isSizeProvidedByClient()) {
             size = Integer.MAX_VALUE;
         }
@@ -44,7 +42,6 @@ public class CustomersController {
 
         return ResponseEntity.ok(activeCustomers);
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<Customers> getCustomerById(@PathVariable Long id) {

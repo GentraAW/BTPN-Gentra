@@ -80,7 +80,7 @@ export class EditOrdersComponent implements OnInit {
         }
       )
 
-      console.log('Order yang berhasil diupdate:', response.data) // Log data yang berhasil diupdate
+      console.log('Order yang berhasil diupdate:', response.data)
 
       alert('Order berhasil diupdate')
       this.router.navigate(['/order'])

@@ -28,9 +28,6 @@ const routes: Routes = [
   { path: 'item', component: PagesItemComponent },
   { path: 'navbar', component: NavbarComponent },
   { path: 'edit-order/:orderId', component: EditOrdersComponent }
-  // { path: '', component: LoginComponent },
-  // { path: 'daftar-makanan', component: DaftarMakananComponent },
-  // { path: 'register', component: RegisterComponent },
 ]
 
 @NgModule({

@@ -1,8 +1,5 @@
 package com.be_springboot_onlineshop.controller;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,9 +21,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.be_springboot_onlineshop.model.Customers;
 import com.be_springboot_onlineshop.model.Items;
 import com.be_springboot_onlineshop.model.Orders;
-import com.be_springboot_onlineshop.repository.CustomersRepo;
-import com.be_springboot_onlineshop.repository.ItemsRepo;
-import com.be_springboot_onlineshop.repository.OrdersRepo;
 import com.be_springboot_onlineshop.service.OrdersService;
 
 @RestController
@@ -44,7 +37,6 @@ public class OrdersController {
         @RequestParam(defaultValue = "asc") String direction,
         @RequestParam(required = false) String customerName) {
 
-        // ubah size menjadi Integer.MAX_VALUE untuk menampilkan semua data pada satu halaman.
         if (size == 5 && !isSizeProvidedByClient()) {
             size = Integer.MAX_VALUE;
         }
@@ -71,7 +63,6 @@ public class OrdersController {
             @RequestParam(name = "quantity") Integer quantity) {
         
         Orders newOrder = new Orders();
-        // newOrder.setOrderDate(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
         newOrder.setOrderDate( new Date());
         newOrder.setQuantity(quantity);
 

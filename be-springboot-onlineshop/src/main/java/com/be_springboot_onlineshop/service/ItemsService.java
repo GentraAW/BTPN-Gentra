@@ -1,7 +1,5 @@
 package com.be_springboot_onlineshop.service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
@@ -41,7 +39,7 @@ public class ItemsService {
     public Items createItem(Items newItem) {
         newItem.setIsAvailable(true);
         newItem.setLastReStock(new Date());
-        // newItem.setLastReStock(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
+
         return itemsRepo.save(newItem);
     }
 

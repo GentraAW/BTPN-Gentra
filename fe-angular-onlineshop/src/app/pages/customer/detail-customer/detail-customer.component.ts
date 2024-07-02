@@ -24,7 +24,7 @@ export class DetailCustomerComponent implements OnInit {
     if (customerId) {
       this.getCustomerDetail(customerId)
     } else {
-      this.router.navigate(['/']) // Navigasi ke halaman home jika customerId null
+      this.router.navigate(['/'])
     }
   }
 
@@ -36,7 +36,7 @@ export class DetailCustomerComponent implements OnInit {
       this.customer = response.data
     } catch (error) {
       console.error('Error fetching customer detail:', error)
-      this.router.navigate(['/']) // Navigasi ke halaman home jika terjadi kesalahan saat mengambil data
+      this.router.navigate(['/'])
     }
   }
 }
